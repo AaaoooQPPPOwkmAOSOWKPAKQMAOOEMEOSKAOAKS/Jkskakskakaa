@@ -1,0 +1,1956 @@
+if game.PlaceId == 6403373529 then
+function TweenTeleport(path, speed, newcframe)
+    local tween = game:GetService("TweenService"):Create(path, TweenInfo.new(speed, Enum.EasingStyle.Linear), {CFrame = newcframe})
+    tween:Play()
+    tween.Completed:Wait()
+    tween:Cancel()
+end
+
+for i,portal in pairs(game.Workspace.Lobby:GetChildren()) do
+    if portal.Name == "MeshPart" and portal.Color == Color3.fromRGB(231, 231, 236) then
+        portal.CanCollide = false
+    end
+end
+
+if game.ReplicatedStorage:FindFirstChild("AdminGUI") then
+    game.ReplicatedStorage.AdminGUI:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("Ban") then
+    game.ReplicatedStorage.Ban:Destroy()
+end
+if game.StarterPlayer.StarterPlayerScripts:FindFirstChild("ClientAnticheat") then
+    game.StarterPlayer.StarterPlayerScripts.ClientAnticheat:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("GRAB") then
+    game.ReplicatedStorage.GRAB:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("SpecialGloveAccess") then
+    game.ReplicatedStorage.SpecialGloveAccess:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("WalkSpeedChanged") then
+    game.ReplicatedStorage.WalkSpeedChanged:Destroy()
+end
+
+if game.Workspace:FindFirstChild("SafeSpot") == nil then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") and not game.Workspace.SafeSpot:FindFirstChild("Part2") and not game.Workspace.SafeSpot:FindFirstChild("Part3") and not game.Workspace.SafeSpot:FindFirstChild("Part4") and not game.Workspace.SafeSpot:FindFirstChild("Part5") and not game.Workspace.SafeSpot:FindFirstChild("Part6") and not game.Workspace.SafeSpot:FindFirstChild("ToTPAfterSlappedPeople") and not game.Workspace.SafeSpot:FindFirstChild("PartForCloud1") and not game.Workspace.SafeSpot:FindFirstChild("PartForCloud2") and not game.Workspace.SafeSpot:FindFirstChild("PartForCloud3") and not game.Workspace.SafeSpot:FindFirstChild("PartForCloud4") then
+    local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part1.Name = "Part1"
+    Part1.Position = Vector3.new(20000, 0, 20000)
+    Part1.Size = Vector3.new(200, 10 ,200)
+    Part1.Anchored = true
+    Part1.Transparency = .5
+    Part1.Material = "ForceField"
+
+    local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part2.Name = "Part2"
+    Part2.Position = Vector3.new(19905, 55, 20000)
+    Part2.Size = Vector3.new(10, 100, 200)
+    Part2.Anchored = true
+    Part2.Transparency = 1
+
+    local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part3.Name = "Part3"
+    Part3.Position = Vector3.new(20095, 55, 20000)
+    Part3.Size = Vector3.new(10, 100, 200)
+    Part3.Anchored = true
+    Part3.Transparency = 1
+
+    local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part4.Name = "Part4"
+    Part4.Position = Vector3.new(20000, 55, 20095)
+    Part4.Size = Vector3.new(180, 100, 10)
+    Part4.Anchored = true
+    Part4.Transparency = 1
+
+    local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part5.Name = "Part5"
+    Part5.Position = Vector3.new(20000, 55, 19905)
+    Part5.Size = Vector3.new(180, 100, 10)
+    Part5.Anchored = true
+    Part5.Transparency = 1
+
+    local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part6.Name = "Part6"
+    Part6.Position = Vector3.new(20000, 110, 20000)
+    Part6.Size = Vector3.new(200, 10, 200)
+    Part6.Anchored = true
+    Part6.Transparency = 1
+    
+    local ToTPAfterSlappedPeople = Instance.new("Part", game.Workspace.SafeSpot)
+    ToTPAfterSlappedPeople.Name = "ToTPAfterSlappedPeople"
+    ToTPAfterSlappedPeople.Position = Vector3.new(14.053071975708008, 6000, -3.2118124961853027)
+    ToTPAfterSlappedPeople.Size = Vector3.new(10, 2, 10)
+    ToTPAfterSlappedPeople.Anchored = true
+    ToTPAfterSlappedPeople.Transparency = 1
+end
+
+local OrionLib = loadstring(game:HttpGet(("https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/Library/Orion/Source.lua")))()
+local Window = OrionLib:MakeWindow({Name = "Mastery Farm | Regular Slap Battles", IntroText = "Loading...", SearchBar = {Default = "Search Tabs", ClearTextOnFocus = false}, HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = false})
+
+local BrickMastery = Window:MakeTab({Name = "Brick Mastery", Icon = "rbxassetid://133803568114649", PremiumOnly = false})
+local WormholeMastery = Window:MakeTab({Name = "Wormhole Mastey", Icon = "rbxassetid://130540606622356", PremiumOnly = false})
+local CloudMastery = Window:MakeTab({Name = "Cloud Mastery", Icon = "rbxassetid://99384279715032", PremiumOnly = false})
+local RunMastery = Window:MakeTab({Name = "Run Mastery", Icon = "rbxassetid://84397906216223", PremiumOnly = false})
+local ObbyMastery = Window:MakeTab({Name = "Obby Mastery", Icon = "rbxassetid://91900671852305", PremiumOnly = false})
+local KillstreakMastery = Window:MakeTab({Name = "Killstreak Mastery", Icon = "rbxassetid://128404861901604", PremiumOnly = false})
+local GlovelMastery = Window:MakeTab({Name = "Glovel Mastery", Icon = "rbxassetid://133551280659102", PremiumOnly = false})
+local BusMastery = Window:MakeTab({Name = "Bus Mastery", Icon = "rbxassetid://94624424038507", PremiumOnly = false})
+local REDACTEDMastery = Window:MakeTab({Name = "REDACTED Mastery", Icon = "rbxassetid://135437798254699", PremiumOnly = false})
+local BombMastery = Window:MakeTab({Name = "Bomb Mastery", Icon = "rbxassetid://95688483730749", PremiumOnly = false})
+local RobMastery = Window:MakeTab({Name = "Rob Mastery", Icon = "rbxassetid://78581525350791", PremiumOnly = false})
+local SpinMastery = Window:MakeTab({Name = "Spin Mastery", Icon = "", PremiumOnly = false})
+local Other_Tab = Window:MakeTab({Name = "Other", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local Credits_Tab = Window:MakeTab({Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+BrickMastery:AddButton({Name = "Equip Brick", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 150 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Brick" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Brick!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Brick.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Brick", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Brick!", Duration = 5, Text = "" })
+   end
+end})
+
+BrickMastery:AddDropdown({Name = "Method To Get Brick Master Fast", Default = "", Options = {"1× Speed (pressing E)", "2× Speed (1 Brick Every 3.8 Seconds)", "3× Speed (1 Brick Every 2.8 Seconds)", "4× Speed (1 Brick Every 2 Seconds)", "5× Speed (1 Brick Every 1.2 Seconds, Sometime kicks)"}, Callback = function(Value)
+    _G.BrickMasterMethod = Value
+end})
+
+BrickMastery:AddToggle({Name = "Auto Get Brick Master", Default = false, Callback = function(Value)
+    _G.AutoGetBrickMaster = Value
+    if _G.BrickMasterMethod == "1× Speed (pressing E)" then
+        while _G.AutoGetBrickMaster and wait(5.2) do      
+            game:GetService("VirtualInputManager"):SendKeyEvent(true,"E",false,x)
+        end
+    elseif _G.BrickMasterMethod == "2× Speed (1 Brick Every 3.8 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(3.8) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "3× Speed (1 Brick Every 2.8 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(2.8) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "4× Speed (1 Brick Every 2 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(2) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "5× Speed (1 Brick Every 1.2 Seconds, Sometime kicks)" then
+        while _G.AutoGetBrickMaster and wait(1.2) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end        
+    end
+end})
+
+BrickMastery:AddSection({Name = "Bigger will make it easy to fling"})
+
+BrickMastery:AddButton({Name = "Make Brick Bigger", Callback = function()
+    for i, v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "Union" then
+            v.Size = Vector3.new(10, 1, 10) 
+        end
+    end
+end})
+
+WormholeMastery:AddButton({Name = "Equip Wormhole", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 12000 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Wormhole" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Wormhole!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Wormhole.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Wormhole", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Wormhole!", Duration = 5, Text = "" })
+   end
+end})
+
+WormholeMastery:AddParagraph("Note","if you wanna use auto ambush people. turn on auto teleport before use it. while looping. auto teleport will gives +1 xp for the 2nd quests. which is teleport 1250 times. so it also will gives +1 xp for ambush people if you turn on auto ambush people and auto teleport at the same times.")
+
+WormholeMastery:AddToggle({Name = "Auto Ambush People", Default = false, Callback = function(Value)
+    _G.AutoAmbushPeople = Value
+    while _G.AutoAmbushPeople do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Wormhole" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.WormHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                            wait(3)
+                        end
+                    end
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+WormholeMastery:AddToggle({Name = "Auto Teleport", Default = false, Callback = function(Value)
+    _G.AutoTeleport = Value
+    while _G.AutoTeleport do       
+        game:GetService("ReplicatedStorage").WormholeTP:FireServer(CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0))    
+        task.wait()
+    end
+end})
+
+WormholeMastery:AddToggle({Name = "Auto Place Wormhole (Instantly)", Default = false, Callback = function(Value)
+    _G.AutoPlaceWormhole = Value
+    while _G.AutoPlaceWormhole do       
+        game:GetService("ReplicatedStorage").WormholePlace:FireServer()    
+        task.wait()
+    end
+end})
+
+CloudMastery:AddButton({Name = "Equip Cloud", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 28000 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Cloud" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Cloud!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Cloud.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Cloud", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Cloud!", Duration = 5, Text = "" })
+   end
+end})
+
+CloudMastery:AddSlider({Name = "Tween Speed (For Travel 200k Studs)", Min = 0.3, Max = 4, Default = 1, Color = Color3.fromRGB(255,255,255), Increment = 0.1, ValueName = "Seconds", Callback = function(Value)
+    _G.TweenSpeed = Value
+end})
+
+local Point = 1
+CloudMastery:AddToggle({Name = "Auto Travel 200k Studs", Default = false, Callback = function(Value)
+    _G.AutoTravel = Value
+    while _G.AutoTravel do       
+        local CFrame = {CFrame.new(-1, 147, 212), CFrame.new(221, 147, 4), CFrame.new(-4, 147, -207), CFrame.new(-211, 147, 1)}
+        
+        function NextCFrameToTween()
+            local ToNextCFrame = CFrame[Point]
+            Point = Point + 1
+            if Point > #CFrame then
+                Point = 1
+            end
+            return ToNextCFrame
+        end
+        
+        if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") ~= nil and game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+            for i, v in pairs(game.Workspace:GetChildren()) do
+                if v.Name:match(game.Players.LocalPlayer.Name) and v:FindFirstChild("VehicleSeat") then
+                    local Cframe = NextCFrameToTween()
+                    TweenTeleport(v.VehicleSeat, _G.TweenSpeed, Cframe)
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+CloudMastery:AddButton({Name = "Pickup People (Make sure you sit on cloud)", Callback = function()
+    for i,v in pairs(game.Players:GetChildren()) do
+        if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+            if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("stevebody") and not v.Character.Humanoid.Sit == true and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then 
+                for i,c in pairs(game.Workspace:GetChildren()) do
+                    if c.Name:match(game.Players.LocalPlayer.Character.Name) and c:FindFirstChild("VehicleSeat") then
+                        repeat task.wait()
+                        v.Character.HumanoidRootPart.CFrame = c.Seat.CFrame
+                        until v.Character.Humanoid.Sit == true
+                        wait(0.3)
+                        if v.Character.Humanoid.Sit == true then
+                            game.ReplicatedStorage.CloudHit:FireServer(v.Character.HumanoidRootPart, true)
+                        end
+                    end
+                end
+            end
+        end
+        wait(3.2)
+    end
+    OrionLib:MakeNotification({Name = "all players did sit on your cloud!", Content = "nothing players is left", Time = 5 })
+end})
+
+CloudMastery:AddToggle({Name = "Auto 'Perform A Successful Death From Above'", Default = false, Callback = function(Value)
+    _G.AutoDeathFromAbove = Value
+    while _G.AutoDeathFromAbove do       
+        if game.Workspace:FindFirstChild(game.Players.LocalPlayer.Character.Name .. "_Cloud") and game.Players.LocalPlayer.Character.Humanoid.Sit == true then 
+            for i,v in pairs(game.Players:GetChildren()) do
+                if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                    if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("stevebody") and not v.Character.Humanoid.Sit == true and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+                            for i = 1, 5 do
+                                game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+                                wait(0.05)
+                            end
+                        end
+                        wait(0.1)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                        wait(0.4)
+                        game.ReplicatedStorage.CloudHit:FireServer(v.Character.HumanoidRootPart, true)
+                        wait(0.2)
+                        for i,c in pairs(game.Workspace:GetChildren()) do
+                            if c.Name:match(game.Players.LocalPlayer.Character.Name) and c:FindFirstChild("VehicleSeat") then
+                                repeat task.wait()
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = c.VehicleSeat.CFrame
+                                until game.Players.LocalPlayer.Character.Humanoid.Sit == true                             
+                            end
+                        end
+                    end
+                end
+                wait(3)
+            end
+        end
+        task.wait()
+    end	
+end})
+
+RunMastery:AddButton({Name = "Equip Run", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 1579276416564374) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Run" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Run!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Run.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Run", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Run!", Duration = 5, Text = "" })
+   end
+end})
+
+RunMastery:AddToggle({Name = "Auto Relocate (Use In Safe Spot)", Default = false, Callback = function(Value)
+    _G.AutoRelocate = Value
+    while _G.AutoRelocate do       
+        game:GetService("ReplicatedStorage").GeneralAbility:FireServer(Vector3.new(20000, 8, 20000))
+        task.wait(5)
+    end
+end})
+
+RunMastery:AddToggle({Name = "Auto Kill Players In Labyrinth", Default = false, Callback = function(Value)
+    _G.AutoKillPlayers = Value
+    while _G.AutoKillPlayers do       
+        if game.Players.LocalPlayer.Character:FindFirstChild("InLabyrinth") then
+            for i,v in ipairs(game.Players:GetChildren()) do
+                if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("InLabyrinth") then
+                    v.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+RunMastery:AddToggle({Name = "Players ESP", Default = false, Callback = function(Value)
+    _G.PlayersESP = Value
+    while _G.PlayersESP do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("InLabyrinth") then
+                if not v.Character.HumanoidRootPart:FindFirstChild("BillboardGui") then
+                    local BillboardGui = Instance.new("BillboardGui", v.Character.HumanoidRootPart)
+                    BillboardGui.AlwaysOnTop = true
+                end
+                if v.Character.HumanoidRootPart:FindFirstChild("BillboardGui") and not v.Character.HumanoidRootPart.BillboardGui:FindFirstChild("TextLabel") then
+                    local TextLabel = Instance.new("TextLabel", esp.Hitbox.BillboardGui)
+                    TextLabel.Name = "ESP"
+                    TextLabel.Text = v.Character.Name
+                    TextLabel.RichText = true
+                    TextLabel.TextScaled = true
+                    TextLabel.TextSize = 20
+                    TextLabel.BackgroundTransparency = 1
+                    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)                                                                            
+                end
+            end
+        end
+        task.wait()
+    end		
+end})
+
+RunMastery:AddToggle({Name = "Exit ESP", Default = false, Callback = function(Value)
+    _G.ExitESP = Value
+    while _G.ExitESP do       
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name:match("'s Labyrinth") then
+                for i,esp in pairs(v.Doors:GetChildren()) do
+                    if esp.Hitbox:FindFirstChildWhichIsA("TouchTransmitter") then
+                        if not esp.Hitbox:FindFirstChild("BillboardGui") then
+                            local BillboardGui = Instance.new("BillboardGui", esp.Hitbox)
+                            BillboardGui.AlwaysOnTop = true
+                        end
+                        if esp.Hitbox:FindFirstChild("BillboardGui") and not esp.Hitbox.BillboardGui:FindFirstChild("TextLabel") then
+                            local TextLabel = Instance.new("TextLabel", esp.Hitbox.BillboardGui)
+                            TextLabel.Name = "ESP"
+                            TextLabel.BackgroundTransparency = 1
+                            TextLabel.RichText = true
+                            TextLabel.Text = "EXIT"
+                            TextLabel.TextScaled = true
+                            TextLabel.TextSize = 20
+                            TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                        end
+                    end
+                end
+            end
+        end  
+        task.wait()
+    end	
+end})
+
+ObbyMastery:AddButton({Name = "Equip Obby", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2130463063) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Obby" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Obby!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Obby.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Obby", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Obby!", Duration = 5, Text = "" })
+   end
+end})
+
+ObbyMastery:AddToggle({Name = "Auto Slap People", Default = false, Callback = function(Value)
+    _G.AutoSlapPeople = Value
+    while _G.AutoSlapPeople do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Obby" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.GeneralHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+ObbyMastery:AddDropdown({Name = "Select Islands To Place Obby Part", Default = "", Options = {"Slapple Islands", "Cannon Islands"}, Callback = function(Value)
+    _G.SelectedIslands = Value
+end})
+
+ObbyMastery:AddToggle({Name = "Auto Place Obby Part", Default = false, Callback = function(Value)
+    _G.AutoPlaceObbyPart = Value 
+    if _G.AutoPlaceObbyPart == true then
+        coroutine.wrap(CharacterFreezed)()
+    end
+    if _G.SelectedIslands == "Slapple Islands" then
+        while _G.AutoPlaceObbyPart and wait(2.2) do
+            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(CFrame.new(-432.2147521972656, 54.19139862060547, -30.286529541015625) * CFrame.Angles(-2.3550068561917215e-08, -0.2980894148349762, 1.1038673974894664e-08), 4)
+        end
+    elseif _G.SelectedIslands == "Cannon Islands" then
+        while _G.AutoPlaceObbyPart and wait(2.2) do
+            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(CFrame.new(274.3122253417969, 24.193954467773438, 238.1956024169922) * CFrame.Angles(-1.6606516339834343e-07, 0.882478654384613, 1.1474499217456469e-07), 4)
+        end
+    end
+end})
+
+function CharacterFreezed()
+   while _G.AutoPlaceObbyPart do
+       if _G.SelectedIslands == "Slapple Islands" then
+           game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-428.511993, 68.6306, -29.3827648, -0.275843918, -1.7260513e-08, -0.961202443, -2.2711022e-09, 1, -1.73054531e-08, 0.961202443, -2.59061506e-09, -0.275843918))
+       elseif _G.SelectedIslands == "Cannon Islands" then
+           game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(265.99234, 26.762352, 243.345184, -0.984686136, 1.0452613e-07, -0.174336612, 1.06392697e-07, 1, -1.36104228e-09, 0.174336612, -1.98883416e-08, -0.984686136))     
+       end  
+       task.wait()
+   end
+end
+
+KillstreakMastery:AddButton({Name = "Equip Killstreak", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 5000 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Killstreak" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Killstreak!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Killstreak.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Killstreak", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Killstreak!", Duration = 5, Text = "" })
+   end
+end})
+
+KillstreakMastery:AddToggle({Name = "Kill Farm", Default = false, Callback = function(Value)
+    _G.KillFarm = Value
+    while _G.KillFarm do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Killstreak" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.KSHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+GlovelMastery:AddButton({Name = "Equip Glovel", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 128402905805563) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Glovel" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Glovel!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Glovel.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Glovel", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Glovel!", Duration = 5, Text = "" })
+   end
+end})
+
+GlovelMastery:AddToggle({Name = "Instant Complete Dig 350 Time", Default = false, Callback = function(Value)
+    if Value == true then
+        _G.AutoCompleteDig = Value
+        while _G.AutoCompleteDig do
+            task.spawn(function()
+                game:GetService("ReplicatedStorage").GlovelFunc:InvokeServer()
+            end)
+            task.wait()
+        end
+    else
+        _G.AutoCompleteDig = false
+        wait(.2)
+        for i = 1, 5 do
+            game:GetService("ReplicatedStorage").GlovelCancel:FireServer()
+        end
+    end
+end})
+
+GlovelMastery:AddToggle({Name = "Auto Land Crits On Enemies (in a row does count)", Default = false, Callback = function(Value)
+    _G.AutoLandCritsOnEnemies = Value
+    while _G.AutoLandCritsOnEnemies do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Glovel" then
+                            spawn(function()
+                                _G.TeleportToPPL = true
+                                while _G.TeleportToPPL do
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(2, 6, 2)
+                                    task.wait(0)
+                                end
+                            end)
+                            wait(0.4)
+                            game.ReplicatedStorage.GeneralHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.3)
+                            _G.TeleportToPPL = false
+                            wait(0.1)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+BusMastery:AddButton({Name = "Equip Bus", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124858899) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Bus!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.bus.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Bus", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Bus!", Duration = 5, Text = "" })
+   end
+end})
+
+BusMastery:AddToggle({Name = "Auto Touch Bus (For 'G-Grandson..?' Badges)", Default = false, Callback = function(Value)
+    _G.AutoTouchBus = Value
+    while _G.AutoTouchBus do       
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name == "BusModel" then
+                if game.Players.LocalPlayer.Character.Ragdolled.Value == false then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0) 
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1) 
+                end
+            end
+        end
+        task.wait(.2)
+    end
+end})
+
+BusMastery:AddToggle({Name = "Auto Slap People", Default = false, Callback = function(Value)
+    _G.AutoSlapPeoplee = Value
+    while _G.AutoSlapPeoplee do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.hitbus:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+BusMastery:AddToggle({Name = "Auto Hit People With Bus", Default = false, Callback = function(Value)
+    _G.AutoHitPeopleWithBus = Value
+    while _G.AutoHitPeopleWithBus do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") or v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") or not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("Counterd") or not v.Character:FindFirstChild("Mirage") or v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.3)
+                            game:GetService("ReplicatedStorage").busmoment:FireServer()
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+                        end
+                    end
+                end
+            end
+            wait(5.5)
+        end
+        task.wait()
+    end
+end})
+
+REDACTEDMastery:AddButton({Name = "Equip REDACTED", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124847850) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "[REDACTED]" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped REDACTED!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby["[REDACTED]"].ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip REDACTED", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own REDACTED!", Duration = 5, Text = "" })
+   end
+end})
+
+REDACTEDMastery:AddSlider({Name = "Spam REDACTED Speeds", Min = 5.2, Max = 11.2, Default = 4.2, Color = Color3.fromRGB(255,255,255), Increment = 0.1, ValueName = "Seconds", Callback = function(Value)
+    _G.Speeds = Value
+end})
+
+REDACTEDMastery:AddToggle({Name = "Auto Place Portal", Default = false, Callback = function(Value)
+    _G.AutoPlacePortal = Value
+    while _G.AutoPlacePortal do       
+        game:GetService("ReplicatedStorage").Well:FireServer()
+        task.wait(_G.Speeds)
+    end
+end})
+
+BombMastery:AddButton({Name = "Equip Bomb", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124919840) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Bomb!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Bomb.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Bomb", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Bomb!", Duration = 5, Text = "" })
+   end
+end})
+
+BombMastery:AddSection({Name = "Not Instantly, but it will gives you like 250+ xp or 450+ xp or even more xp."})
+
+BombMastery:AddButton({Name = "Instant Complete Throw Bomb (can get kicks)", Callback = function()
+    coroutine.wrap(function()
+        for i = 1, math.huge do
+            task.spawn(function()
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+            end)
+            task.wait()
+        end
+    end)()
+end})
+
+BombMastery:AddToggle({Name = "Auto 'Snipe Others'", Default = false, Callback = function(Value)
+    _G.AutoSnipeOther = Value
+    while _G.AutoSnipeOther do       
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and not game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+            repeat task.wait()
+            local PathfindingService = game:GetService("PathfindingService")
+            local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+            local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+            local MoveTo = game.Workspace.Lobby.Teleport2.Position
+                    
+            local Path = PathfindingService:CreatePath()                 
+            Path:ComputeAsync(Character.Position, MoveTo) 
+                    
+            local Waypoints = Path:GetWaypoints()                      
+            for i, waypoint in pairs(Waypoints) do                                                 
+                Humanoid:MoveTo(waypoint.Position)                                                
+            end            
+            until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+            wait(0.2)
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+            wait(0.4)
+            repeat task.wait()
+            game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+            until game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb")
+            wait(0.2)
+            repeat task.wait(0)
+            if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb") then
+               game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb").CFrame)
+            end
+            until game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb") == nil
+            wait(0.75)
+            repeat task.wait()
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+            until game.Players.LocalPlayer.Character.Ragdolled.Value == false          
+        end       
+        task.wait()
+    end	
+end})
+
+BombMastery:AddDropdown({Name = "Knock People In The Void Method", Default = "", Options = {"Walk", "Teleport"}, Callback = function(Value)
+	_G.Method = Value	
+end})
+
+BombMastery:AddToggle({Name = "Auto 'Knock People In The Void'", Default = false, Callback = function(Value)
+    _G.KnockYourself = Value
+    while _G.KnockYourself do
+        if _G.Method == "Walk" then   
+            if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and not game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                repeat task.wait()
+                local PathfindingService = game:GetService("PathfindingService")
+                local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+                local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+                local MoveTo = game.Workspace.Lobby.Teleport2.Position
+                    
+                local Path = PathfindingService:CreatePath()                 
+                Path:ComputeAsync(Character.Position, MoveTo) 
+                    
+                local Waypoints = Path:GetWaypoints()                      
+                for i, waypoint in pairs(Waypoints) do                                                 
+                    Humanoid:MoveTo(waypoint.Position)                                                
+                end
+                until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+                wait(0.4)
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                    local PathfindingService = game:GetService("PathfindingService")
+                    local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+                    local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+                    local MoveTo = CFrame.new(151.03038, 359.984222, 43.2965469, 0.852800727, 4.08886862e-08, 0.522236466, 8.56088089e-09, 1, -9.227508e-08, -0.522236466, 8.31630587e-08, 0.852800727)
+                    
+                    local Path = PathfindingService:CreatePath()                 
+                    Path:ComputeAsync(Character.CFrame, MoveTo) 
+                    
+                    local Waypoints = Path:GetWaypoints()                      
+                    for i, waypoint in pairs(Waypoints) do                                                 
+                        Humanoid:MoveTo(waypoint.Position)                                                
+                    end
+                end
+                wait(0.2)               
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(1.2)
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(0.75)
+                repeat task.wait()
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.DEATHBARRIER.CFrame)
+                until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health <= 0
+                repeat task.wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            end
+        elseif _G.Method == "Teleport" then
+            if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then     
+                repeat task.wait()
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game.Workspace.Lobby.Teleport2, 0)
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game.Workspace.Lobby.Teleport2, 1)
+                until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+                wait(0.4)
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(151.03038, 359.984222, 43.2965469, 0.852800727, 4.08886862e-08, 0.522236466, 8.56088089e-09, 1, -9.227508e-08, -0.522236466, 8.31630587e-08, 0.852800727))                    
+                end
+                wait(0.2)               
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(1.2)
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(0.75)
+                repeat task.wait()
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.DEATHBARRIER.CFrame)
+                until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health <= 0
+                repeat task.wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
+            end 
+        end
+        task.wait()
+    end	
+end})
+
+RobMastery:AddButton({Name = "Equip Rob", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2147429609) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "rob" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Rob!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.rob.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Rob", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Rob!", Duration = 5, Text = "" })
+   end
+end})
+
+RobMastery:AddButton({Name = "Create a null portal and survive", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2147429609) and game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2125950512) then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.Origo.CFrame * CFrame.new(0,180,0)
+        wait(0.1)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+        wait(.2)
+        fireclickdetector(game.Workspace.Lobby.rob.ClickDetector)
+        wait(0.3)
+        game:GetService("ReplicatedStorage").rob:FireServer(false)
+        wait(4.8)   
+        fireclickdetector(game.Workspace.Lobby.bob.ClickDetector)
+        task.wait(0.08)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+        wait(0.3)
+        game:GetService("ReplicatedStorage").bob:FireServer()
+        wait(0.5)
+        for i = 1,26 do
+            for _, v in pairs(workspace:GetChildren()) do
+                if v.Name:match("ÅBOB_"..game.Players.LocalPlayer.Character.Name) and v:FindFirstChild("HumanoidRootPart") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+                end
+            end
+        end
+        wait(0.75)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.CannonIsland.Cannon.Base.CFrame * CFrame.new(0, 0, 35)
+    else
+        OrionLib:MakeNotification({Name = "Gloves Not Owned!", Content = "You do not own rob and bob", Time = 5})
+    end
+end})
+
+RobMastery:AddToggle({Name = "Auto 'Travel 25000 studs as rob over the void'", Default = false, Callback = function(Value)
+    _G.AutoTravelAsRob = Value
+    while _G.AutoTravelAsRob do       
+        if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name).Head.Transparency ~= 1 then
+            repeat task.wait()
+            TweenTeleport(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, 0.5, CFrame.new(-437, -6, -14))
+            wait()
+            TweenTeleport(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, 0.5, CFrame.new(3, -6, 362))
+            wait()
+            TweenTeleport(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, 0.5, CFrame.new(414, -6, -18))
+            wait()
+            TweenTeleport(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, 0.5, CFrame.new(-8, -6, -419))
+            until game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name) == nil
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.Origo.CFrame * CFrame.new(0,-5,0)
+        end        
+        task.wait()
+    end
+end})
+
+RobMastery:AddToggle({Name = "Auto Absorb People", Default = false, Callback = function(Value)
+    _G.AutoAbsorbPeople = Value
+    while _G.AutoAbsorbPeople do
+        if game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+            wait(0.3)
+            game:GetService("ReplicatedStorage").rob:FireServer(false)
+            wait(4.2)
+            for i,v in pairs(game.Players:GetChildren()) do
+                if v.Name:match("rob_"..game.Players.LocalPlayer.Name) and v:FindFirstChild("HumanoidRootPart") then
+                    for i, user in pairs(game.Players:GetChildren()) do
+                        if user ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and user.Character then
+                            if game.Players.LocalPlayer.Character:FindFirstChild("entered") and user.Character:FindFirstChild("entered") and not user.Character:FindFirstChild("rock") and user.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not user.Character:FindFirstChild("stevebody") and not user.Character:FindFirstChild("Counterd") and not user.Character:FindFirstChild("Mirage") and user.leaderstats.Glove.Value ~= "Spectator" then
+                                v.CFrame = user.Character.HumanoidRootPart.CFrame
+                            end
+                        end
+                    end
+                end
+                wait(1)
+            end
+        end
+        task.wait()
+    end		
+end})
+
+Other_Tab:AddButton({Name = "Become Invisibility", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 666 then 
+        local EquippedGloves = game.Players.LocalPlayer.leaderstats.Glove.Value
+        fireclickdetector(game.Workspace.Lobby.Ghost.ClickDetector)
+        wait(0.2)
+        game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()       
+        wait(0.2)
+        fireclickdetector(game.Workspace.Lobby[EquippedGloves].ClickDetector)
+    else
+        game.StarterGui:SetCore("SendNotification", {Title = "You don't have 666+ slaps!", Duration = 5, Text = "" })
+    end
+end})
+
+Other_Tab:AddButton({Name = "Teleport to Safespot", Callback = function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+end})
+
+Credits_Tab:AddSection({Name = "Script is made by BaconScripter"})
+Credits_Tab:AddLabel("All social media below")
+Credits_Tab:AddButton({Name = "YouTube Channel", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied YouTube Channel Links", Content = "", Time = 5 })
+    setclipboard("https://youtube.com/@baconscripters?si=q84G7kJJbbCbIwdv")
+end})
+
+Credits_Tab:AddButton({Name = "Discord Server", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied DC Server Links", Content = "", Time = 5 })
+    setclipboard("https://discord.gg/RQks2STrZb")
+end})
+elseif game.PlaceId == 9015014224 then
+function TweenTeleport(path, speed, newcframe)
+    local tween = game:GetService("TweenService"):Create(path, TweenInfo.new(speed, Enum.EasingStyle.Linear), {CFrame = newcframe})
+    tween:Play()
+    tween.Completed:Wait()
+    tween:Cancel()
+end
+
+for i,portal in pairs(game.Workspace.Lobby:GetChildren()) do
+    if portal.Name == "MeshPart" and portal.Color == Color3.fromRGB(231, 231, 236) then
+        portal.CanCollide = false
+    end
+end
+
+if game.ReplicatedStorage:FindFirstChild("AdminGUI") then
+    game.ReplicatedStorage.AdminGUI:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("Ban") then
+    game.ReplicatedStorage.Ban:Destroy()
+end
+if game.StarterPlayer.StarterPlayerScripts:FindFirstChild("ClientAnticheat") then
+    game.StarterPlayer.StarterPlayerScripts.ClientAnticheat:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("GRAB") then
+    game.ReplicatedStorage.GRAB:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("SpecialGloveAccess") then
+    game.ReplicatedStorage.SpecialGloveAccess:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("WalkSpeedChanged") then
+    game.ReplicatedStorage.WalkSpeedChanged:Destroy()
+end
+if game.Workspace:FindFirstChild("SafeSpot") == nil then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") and not game.Workspace.SafeSpot:FindFirstChild("Part2") and not game.Workspace.SafeSpot:FindFirstChild("Part3") and not game.Workspace.SafeSpot:FindFirstChild("Part4") and not game.Workspace.SafeSpot:FindFirstChild("Part5") and not game.Workspace.SafeSpot:FindFirstChild("Part6") and not game.Workspace.SafeSpot:FindFirstChild("ToTPAfterSlappedPeople") then
+    local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part1.Name = "Part1"
+    Part1.Position = Vector3.new(20000, 0, 20000)
+    Part1.Size = Vector3.new(200, 10 ,200)
+    Part1.Anchored = true
+    Part1.Transparency = .5
+    Part1.Material = "ForceField"
+
+    local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part2.Name = "Part2"
+    Part2.Position = Vector3.new(19905, 55, 20000)
+    Part2.Size = Vector3.new(10, 100, 200)
+    Part2.Anchored = true
+    Part2.Transparency = 1
+
+    local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part3.Name = "Part3"
+    Part3.Position = Vector3.new(20095, 55, 20000)
+    Part3.Size = Vector3.new(10, 100, 200)
+    Part3.Anchored = true
+    Part3.Transparency = 1
+
+    local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part4.Name = "Part4"
+    Part4.Position = Vector3.new(20000, 55, 20095)
+    Part4.Size = Vector3.new(180, 100, 10)
+    Part4.Anchored = true
+    Part4.Transparency = 1
+
+    local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part5.Name = "Part5"
+    Part5.Position = Vector3.new(20000, 55, 19905)
+    Part5.Size = Vector3.new(180, 100, 10)
+    Part5.Anchored = true
+    Part5.Transparency = 1
+
+    local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+    Part6.Name = "Part6"
+    Part6.Position = Vector3.new(20000, 110, 20000)
+    Part6.Size = Vector3.new(200, 10, 200)
+    Part6.Anchored = true
+    Part6.Transparency = 1
+    
+    local ToTPAfterSlappedPeople = Instance.new("Part", game.Workspace.SafeSpot)
+    ToTPAfterSlappedPeople.Name = "ToTPAfterSlappedPeople"
+    ToTPAfterSlappedPeople.Position = Vector3.new(14.053071975708008, 6000, -3.2118124961853027)
+    ToTPAfterSlappedPeople.Size = Vector3.new(10, 2, 10)
+    ToTPAfterSlappedPeople.Anchored = true
+    ToTPAfterSlappedPeople.Transparency = 1
+end
+
+local OrionLib = loadstring(game:HttpGet(("https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/Library/Orion/Source.lua")))()
+local Window = OrionLib:MakeWindow({Name = "Mastery Farm | NO ONESHOT GLOVES", IntroText = "Loading...", SearchBar = {Default = "Search Tabs", ClearTextOnFocus = false}, HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = false})
+
+local BrickMastery = Window:MakeTab({Name = "Brick Mastery", Icon = "rbxassetid://133803568114649", PremiumOnly = false})
+local WormholeMastery = Window:MakeTab({Name = "Wormhole Mastey", Icon = "rbxassetid://130540606622356", PremiumOnly = false})
+local CloudMastery = Window:MakeTab({Name = "Cloud Mastery", Icon = "rbxassetid://99384279715032", PremiumOnly = false})
+local RunMastery = Window:MakeTab({Name = "Run Mastery", Icon = "rbxassetid://84397906216223", PremiumOnly = false})
+local ObbyMastery = Window:MakeTab({Name = "Obby Mastery", Icon = "rbxassetid://91900671852305", PremiumOnly = false})
+local GlovelMastery = Window:MakeTab({Name = "Glovel Mastery", Icon = "rbxassetid://133551280659102", PremiumOnly = false})
+local BusMastery = Window:MakeTab({Name = "Bus Mastery", Icon = "rbxassetid://94624424038507", PremiumOnly = false})
+local REDACTEDMastery = Window:MakeTab({Name = "REDACTED Mastery", Icon = "rbxassetid://135437798254699", PremiumOnly = false})
+local BombMastery = Window:MakeTab({Name = "Bomb Mastery", Icon = "rbxassetid://95688483730749", PremiumOnly = false})
+local RobMastery = Window:MakeTab({Name = "Rob Mastery", Icon = "rbxassetid://78581525350791", PremiumOnly = false})
+local Other_Tab = Window:MakeTab({Name = "Other", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local Credits_Tab = Window:MakeTab({Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+BrickMastery:AddButton({Name = "Equip Brick", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 150 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Brick" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Brick!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Brick.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Brick", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Brick!", Duration = 5, Text = "" })
+   end
+end})
+
+BrickMastery:AddDropdown({Name = "Method To Get Brick Master Fast", Default = "", Options = {"1× Speed (pressing E)", "2× Speed (1 Brick Every 3.8 Seconds)", "3× Speed (1 Brick Every 2.8 Seconds)", "4× Speed (1 Brick Every 2 Seconds)", "5× Speed (1 Brick Every 1.2 Seconds, Sometime kicks)"}, Callback = function(Value)
+    _G.BrickMasterMethod = Value
+end})
+
+BrickMastery:AddToggle({Name = "Auto Get Brick Master", Default = false, Callback = function(Value)
+    _G.AutoGetBrickMaster = Value
+    if _G.BrickMasterMethod == "1× Speed (pressing E)" then
+        while _G.AutoGetBrickMaster and wait(5.2) do      
+            game:GetService("VirtualInputManager"):SendKeyEvent(true,"E",false,x)
+        end
+    elseif _G.BrickMasterMethod == "2× Speed (1 Brick Every 3.8 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(3.8) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "3× Speed (1 Brick Every 2.8 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(2.8) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "4× Speed (1 Brick Every 2 Seconds)" then
+        while _G.AutoGetBrickMaster and wait(2) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end 
+    elseif _G.BrickMasterMethod == "5× Speed (1 Brick Every 1.2 Seconds, Sometime kicks)" then
+        while _G.AutoGetBrickMaster and wait(1.2) do      
+            game:GetService("ReplicatedStorage").lbrick:FireServer()
+            game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text = game:GetService("Players").LocalPlayer.PlayerGui.BRICKCOUNT.ImageLabel.TextLabel.Text + 1
+        end        
+    end
+end})
+
+BrickMastery:AddSection({Name = "Bigger will make it easy to fling"})
+
+BrickMastery:AddButton({Name = "Make Brick Bigger", Callback = function()
+    for i, v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "Union" then
+            v.Size = Vector3.new(10, 1, 10) 
+        end
+    end
+end})
+
+WormholeMastery:AddButton({Name = "Equip Wormhole", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 12000 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Wormhole" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Wormhole!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Wormhole.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Wormhole", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Wormhole!", Duration = 5, Text = "" })
+   end
+end})
+
+WormholeMastery:AddParagraph("Note","if you wanna use auto ambush people. turn on auto teleport before use it. while looping. auto teleport will gives +1 xp for the 2nd quests. which is teleport 1250 times. so it also will gives +1 xp for ambush people if you turn on auto ambush people and auto teleport at the same times.")
+
+WormholeMastery:AddToggle({Name = "Auto Ambush People", Default = false, Callback = function(Value)
+    _G.AutoAmbushPeople = Value
+    while _G.AutoAmbushPeople do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Wormhole" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.WormHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                            wait(3)
+                        end
+                    end
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+WormholeMastery:AddToggle({Name = "Auto Teleport", Default = false, Callback = function(Value)
+    _G.AutoTeleport = Value
+    while _G.AutoTeleport do       
+        game:GetService("ReplicatedStorage").WormholeTP:FireServer(CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0))    
+        task.wait()
+    end
+end})
+
+WormholeMastery:AddToggle({Name = "Auto Place Wormhole (Instantly)", Default = false, Callback = function(Value)
+    _G.AutoPlaceWormhole = Value
+    while _G.AutoPlaceWormhole do       
+        game:GetService("ReplicatedStorage").WormholePlace:FireServer()    
+        task.wait()
+    end
+end})
+
+CloudMastery:AddButton({Name = "Equip Cloud", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 28000 then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Cloud" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Cloud!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Cloud.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Cloud", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Cloud!", Duration = 5, Text = "" })
+   end
+end})
+
+CloudMastery:AddSlider({Name = "Tween Speed (For Travel 200k Studs)", Min = 0.3, Max = 4, Default = 1, Color = Color3.fromRGB(255,255,255), Increment = 0.1, ValueName = "Seconds", Callback = function(Value)
+    _G.TweenSpeed = Value
+end})
+
+local Point = 1
+CloudMastery:AddToggle({Name = "Auto Travel 200k Studs", Default = false, Callback = function(Value)
+    _G.AutoTravel = Value
+    while _G.AutoTravel do       
+        local CFrame = {CFrame.new(-1, 147, 212), CFrame.new(221, 147, 4), CFrame.new(-4, 147, -207), CFrame.new(-211, 147, 1)}
+        
+        function NextCFrameToTween()
+            local ToNextCFrame = CFrame[Point]
+            Point = Point + 1
+            if Point > #CFrame then
+                Point = 1
+            end
+            return ToNextCFrame
+        end
+        
+        if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") ~= nil and game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+            for i, v in pairs(game.Workspace:GetChildren()) do
+                if v.Name:match(game.Players.LocalPlayer.Name) and v:FindFirstChild("VehicleSeat") then
+                    local Cframe = NextCFrameToTween()
+                    TweenTeleport(v.VehicleSeat, _G.TweenSpeed, Cframe)
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+CloudMastery:AddButton({Name = "Pickup People (Make sure you sit on cloud)", Callback = function()
+    for i,v in pairs(game.Players:GetChildren()) do
+        if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+            if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("stevebody") and not v.Character.Humanoid.Sit == true and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then 
+                for i,c in pairs(game.Workspace:GetChildren()) do
+                    if c.Name:match(game.Players.LocalPlayer.Character.Name) and c:FindFirstChild("VehicleSeat") then
+                        repeat task.wait()
+                        v.Character.HumanoidRootPart.CFrame = c.Seat.CFrame
+                        until v.Character.Humanoid.Sit == true
+                        wait(0.3)
+                        if v.Character.Humanoid.Sit == true then
+                            game.ReplicatedStorage.CloudHit:FireServer(v.Character.HumanoidRootPart, true)
+                        end
+                    end
+                end
+            end
+        end
+        wait(3.2)
+    end
+    OrionLib:MakeNotification({Name = "all players did sit on your cloud!", Content = "nothing players is left", Time = 5 })
+end})
+
+CloudMastery:AddToggle({Name = "Auto 'Perform A Successful Death From Above'", Default = false, Callback = function(Value)
+    _G.AutoDeathFromAbove = Value
+    while _G.AutoDeathFromAbove do       
+        if game.Workspace:FindFirstChild(game.Players.LocalPlayer.Character.Name .. "_Cloud") and game.Players.LocalPlayer.Character.Humanoid.Sit == true then 
+            for i,v in pairs(game.Players:GetChildren()) do
+                if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                    if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("stevebody") and not v.Character.Humanoid.Sit == true and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+                            game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+                        end
+                        wait(0.1)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                        wait(0.4)
+                        game.ReplicatedStorage.CloudHit:FireServer(v.Character.HumanoidRootPart, true)
+                        wait(0.2)
+                        for i,c in pairs(game.Workspace:GetChildren()) do
+                            if c.Name:match(game.Players.LocalPlayer.Character.Name) and c:FindFirstChild("VehicleSeat") then
+                                repeat task.wait()
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = c.VehicleSeat.CFrame
+                                until game.Players.LocalPlayer.Character.Humanoid.Sit == true                             
+                            end
+                        end
+                    end
+                end
+                wait(3)
+            end
+        end
+        task.wait()
+    end	
+end})
+
+RunMastery:AddButton({Name = "Equip Run", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 1579276416564374) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Run" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Run!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Run.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Run", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Run!", Duration = 5, Text = "" })
+   end
+end})
+
+RunMastery:AddToggle({Name = "Auto Relocate (Use In Safe Spot)", Default = false, Callback = function(Value)
+    _G.AutoRelocate = Value
+    while _G.AutoRelocate do       
+        game:GetService("ReplicatedStorage").GeneralAbility:FireServer(Vector3.new(20000, 8, 20000))
+        task.wait(5)
+    end
+end})
+
+RunMastery:AddToggle({Name = "Auto Kill Players In Labyrinth", Default = false, Callback = function(Value)
+    _G.AutoKillPlayers = Value
+    while _G.AutoKillPlayers do       
+        if game.Players.LocalPlayer.Character:FindFirstChild("InLabyrinth") then
+            for i,v in ipairs(game.Players:GetChildren()) do
+                if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("InLabyrinth") then
+                    v.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+RunMastery:AddToggle({Name = "Players ESP", Default = false, Callback = function(Value)
+    _G.PlayersESP = Value
+    while _G.PlayersESP do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("InLabyrinth") then
+                if not v.Character.HumanoidRootPart:FindFirstChild("BillboardGui") then
+                    local BillboardGui = Instance.new("BillboardGui", v.Character.HumanoidRootPart)
+                    BillboardGui.AlwaysOnTop = true
+                end
+                if v.Character.HumanoidRootPart:FindFirstChild("BillboardGui") and not v.Character.HumanoidRootPart.BillboardGui:FindFirstChild("TextLabel") then
+                    local TextLabel = Instance.new("TextLabel", esp.Hitbox.BillboardGui)
+                    TextLabel.Name = "ESP"
+                    TextLabel.Text = v.Character.Name
+                    TextLabel.RichText = true
+                    TextLabel.TextScaled = true
+                    TextLabel.TextSize = 20
+                    TextLabel.BackgroundTransparency = 1
+                    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)                                                                            
+                end
+            end
+        end
+        task.wait()
+    end		
+end})
+
+RunMastery:AddToggle({Name = "Exit ESP", Default = false, Callback = function(Value)
+    _G.ExitESP = Value
+    while _G.ExitESP do       
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name:match("'s Labyrinth") then
+                for i,esp in pairs(v.Doors:GetChildren()) do
+                    if esp.Hitbox:FindFirstChildWhichIsA("TouchTransmitter") then
+                        if not esp.Hitbox:FindFirstChild("BillboardGui") then
+                            local BillboardGui = Instance.new("BillboardGui", esp.Hitbox)
+                            BillboardGui.AlwaysOnTop = true
+                        end
+                        if esp.Hitbox:FindFirstChild("BillboardGui") and not esp.Hitbox.BillboardGui:FindFirstChild("TextLabel") then
+                            local TextLabel = Instance.new("TextLabel", esp.Hitbox.BillboardGui)
+                            TextLabel.Name = "ESP"
+                            TextLabel.BackgroundTransparency = 1
+                            TextLabel.RichText = true
+                            TextLabel.Text = "EXIT"
+                            TextLabel.TextScaled = true
+                            TextLabel.TextSize = 20
+                            TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                        end
+                    end
+                end
+            end
+        end  
+        task.wait()
+    end	
+end})
+
+ObbyMastery:AddButton({Name = "Equip Obby", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2130463063) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Obby" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Obby!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Obby.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Obby", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Obby!", Duration = 5, Text = "" })
+   end
+end})
+
+ObbyMastery:AddToggle({Name = "Auto Slap People", Default = false, Callback = function(Value)
+    _G.AutoSlapPeople = Value
+    while _G.AutoSlapPeople do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Obby" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.GeneralHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+ObbyMastery:AddDropdown({Name = "Select Islands To Place Obby Part", Default = "", Options = {"Slapple Islands", "Cannon Islands"}, Callback = function(Value)
+    _G.SelectedIslands = Value
+end})
+
+ObbyMastery:AddToggle({Name = "Auto Place Obby Part", Default = false, Callback = function(Value)
+    _G.AutoPlaceObbyPart = Value 
+    if _G.AutoPlaceObbyPart == true then
+        coroutine.wrap(CharacterFreezed)()
+    end
+    if _G.SelectedIslands == "Slapple Islands" then
+        while _G.AutoPlaceObbyPart and wait(2.2) do
+            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(CFrame.new(-432.2147521972656, 54.19139862060547, -30.286529541015625) * CFrame.Angles(-2.3550068561917215e-08, -0.2980894148349762, 1.1038673974894664e-08), 4)
+        end
+    elseif _G.SelectedIslands == "Cannon Islands" then
+        while _G.AutoPlaceObbyPart and wait(2.2) do
+            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(CFrame.new(274.3122253417969, 24.193954467773438, 238.1956024169922) * CFrame.Angles(-1.6606516339834343e-07, 0.882478654384613, 1.1474499217456469e-07), 4)
+        end
+    end
+end})
+
+function CharacterFreezed()
+   while _G.AutoPlaceObbyPart do
+       if _G.SelectedIslands == "Slapple Islands" then
+           game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-428.511993, 68.6306, -29.3827648, -0.275843918, -1.7260513e-08, -0.961202443, -2.2711022e-09, 1, -1.73054531e-08, 0.961202443, -2.59061506e-09, -0.275843918))
+       elseif _G.SelectedIslands == "Cannon Islands" then
+           game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(265.99234, 26.762352, 243.345184, -0.984686136, 1.0452613e-07, -0.174336612, 1.06392697e-07, 1, -1.36104228e-09, 0.174336612, -1.98883416e-08, -0.984686136))     
+       end  
+       task.wait()
+   end
+end
+
+GlovelMastery:AddButton({Name = "Equip Glovel", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 128402905805563) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Glovel" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Glovel!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Glovel.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Glovel", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Glovel!", Duration = 5, Text = "" })
+   end
+end})
+
+GlovelMastery:AddToggle({Name = "Instant Complete Dig 350 Time", Default = false, Callback = function(Value)
+    if Value == true then
+        _G.AutoCompleteDig = Value
+        while _G.AutoCompleteDig do
+            task.spawn(function()
+                game:GetService("ReplicatedStorage").GlovelFunc:InvokeServer()
+            end)
+            task.wait()
+        end
+    else
+        _G.AutoCompleteDig = false
+        wait(.2)
+        for i = 1, 5 do
+            game:GetService("ReplicatedStorage").GlovelCancel:FireServer()
+        end
+    end
+end})
+
+GlovelMastery:AddToggle({Name = "Auto Land Crits On Enemies (in a row does count)", Default = false, Callback = function(Value)
+    _G.AutoLandCritsOnEnemies = Value
+    while _G.AutoLandCritsOnEnemies do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Glovel" then
+                            spawn(function()
+                                _G.TeleportToPPL = true
+                                while _G.TeleportToPPL do
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(2, 6, 2)
+                                    task.wait(0)
+                                end
+                            end)
+                            wait(0.4)
+                            game.ReplicatedStorage.GeneralHit:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.3)
+                            _G.TeleportToPPL = false
+                            wait(0.1)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+BusMastery:AddButton({Name = "Equip Bus", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124858899) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Bus!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.bus.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Bus", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Bus!", Duration = 5, Text = "" })
+   end
+end})
+
+BusMastery:AddToggle({Name = "Auto Touch Bus (For 'G-Grandson..?' Badges)", Default = false, Callback = function(Value)
+    _G.AutoTouchBus = Value
+    while _G.AutoTouchBus do       
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name == "BusModel" then
+                if game.Players.LocalPlayer.Character.Ragdolled.Value == false then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0) 
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1) 
+                end
+            end
+        end
+        task.wait(.2)
+    end
+end})
+
+BusMastery:AddToggle({Name = "Auto Slap People", Default = false, Callback = function(Value)
+    _G.AutoSlapPeoplee = Value
+    while _G.AutoSlapPeoplee do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Elude") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false and v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.4)
+                            game.ReplicatedStorage.hitbus:FireServer(v.Character.HumanoidRootPart, true)
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                        end
+                    end
+                end
+            end
+            wait(3)
+        end
+        task.wait()
+    end
+end})
+
+BusMastery:AddToggle({Name = "Auto Hit People With Bus", Default = false, Callback = function(Value)
+    _G.AutoHitPeopleWithBus = Value
+    while _G.AutoHitPeopleWithBus do       
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") and not v.Character:FindFirstChild("rock") or v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") or not v.Character:FindFirstChild("stevebody") then
+                    if not v.Character:FindFirstChild("Counterd") or not v.Character:FindFirstChild("Mirage") or v.leaderstats.Glove.Value ~= "Spectator" then
+                        if game.Players.LocalPlayer.leaderstats.Glove.Value == "bus" then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                            wait(0.3)
+                            game:GetService("ReplicatedStorage").busmoment:FireServer()
+                            wait(0.2)
+                            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+                        end
+                    end
+                end
+            end
+            wait(5.5)
+        end
+        task.wait()
+    end
+end})
+
+REDACTEDMastery:AddButton({Name = "Equip REDACTED", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124847850) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "[REDACTED]" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped REDACTED!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby["[REDACTED]"].ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip REDACTED", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own REDACTED!", Duration = 5, Text = "" })
+   end
+end})
+
+REDACTEDMastery:AddSlider({Name = "Spam REDACTED Speeds", Min = 5.2, Max = 11.2, Default = 4.2, Color = Color3.fromRGB(255,255,255), Increment = 0.1, ValueName = "Seconds", Callback = function(Value)
+    _G.Speeds = Value
+end})
+
+REDACTEDMastery:AddToggle({Name = "Auto Place Portal", Default = false, Callback = function(Value)
+    _G.AutoPlacePortal = Value
+    while _G.AutoPlacePortal do       
+        game:GetService("ReplicatedStorage").Well:FireServer()
+        task.wait(_G.Speeds)
+    end
+end})
+
+BombMastery:AddButton({Name = "Equip Bomb", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2124919840) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Bomb!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.Bomb.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Bomb", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Bomb!", Duration = 5, Text = "" })
+   end
+end})
+
+BombMastery:AddSection({Name = "Not Instantly, but it will gives you like 250+ xp or 450+ xp or even more xp."})
+
+BombMastery:AddButton({Name = "Instant Complete Throw Bomb (can get kicks)", Callback = function()
+    coroutine.wrap(function()
+        for i = 1, math.huge do
+            task.spawn(function()
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+            end)
+            task.wait()
+        end
+    end)()
+end})
+
+BombMastery:AddToggle({Name = "Auto 'Snipe Others'", Default = false, Callback = function(Value)
+    _G.AutoSnipeOther = Value
+    while _G.AutoSnipeOther do       
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and not game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+            repeat task.wait()
+            local PathfindingService = game:GetService("PathfindingService")
+            local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+            local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+            local MoveTo = game.Workspace.Lobby.Teleport2.Position
+                    
+            local Path = PathfindingService:CreatePath()                 
+            Path:ComputeAsync(Character.Position, MoveTo) 
+                    
+            local Waypoints = Path:GetWaypoints()                      
+            for i, waypoint in pairs(Waypoints) do                                                 
+                Humanoid:MoveTo(waypoint.Position)                                                
+            end            
+            until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+            wait(0.2)
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+            wait(0.4)
+            repeat task.wait()
+            game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+            until game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb")
+            wait(0.2)
+            repeat task.wait(0)
+            if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb") then
+               game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb").CFrame)
+            end
+            until game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name.."_bømb") == nil
+            wait(0.75)
+            repeat task.wait()
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+            until game.Players.LocalPlayer.Character.Ragdolled.Value == false          
+        end       
+        task.wait()
+    end	
+end})
+
+BombMastery:AddDropdown({Name = "Knock People In The Void Method", Default = "", Options = {"Walk", "Teleport"}, Callback = function(Value)
+	_G.Method = Value	
+end})
+
+BombMastery:AddToggle({Name = "Auto 'Knock People In The Void'", Default = false, Callback = function(Value)
+    _G.KnockYourself = Value
+    while _G.KnockYourself do
+        if _G.Method == "Walk" then   
+            if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and not game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                repeat task.wait()
+                local PathfindingService = game:GetService("PathfindingService")
+                local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+                local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+                local MoveTo = game.Workspace.Lobby.Teleport2.Position
+                    
+                local Path = PathfindingService:CreatePath()                 
+                Path:ComputeAsync(Character.Position, MoveTo) 
+                    
+                local Waypoints = Path:GetWaypoints()                      
+                for i, waypoint in pairs(Waypoints) do                                                 
+                    Humanoid:MoveTo(waypoint.Position)                                                
+                end
+                until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+                wait(0.4)
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                    local PathfindingService = game:GetService("PathfindingService")
+                    local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+                 
+                    local Character = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")                  
+                    local MoveTo = CFrame.new(151.03038, 359.984222, 43.2965469, 0.852800727, 4.08886862e-08, 0.522236466, 8.56088089e-09, 1, -9.227508e-08, -0.522236466, 8.31630587e-08, 0.852800727)
+                    
+                    local Path = PathfindingService:CreatePath()                 
+                    Path:ComputeAsync(Character.CFrame, MoveTo) 
+                    
+                    local Waypoints = Path:GetWaypoints()                      
+                    for i, waypoint in pairs(Waypoints) do                                                 
+                        Humanoid:MoveTo(waypoint.Position)                                                
+                    end
+                end
+                wait(0.2)               
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(1.2)
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(0.75)
+                repeat task.wait()
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.DEATHBARRIER.CFrame)
+                until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health <= 0
+                repeat task.wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            end
+        elseif _G.Method == "Teleport" then
+            if game.Players.LocalPlayer.leaderstats.Glove.Value == "Bomb" and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then     
+                repeat task.wait()
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game.Workspace.Lobby.Teleport2, 0)
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game.Workspace.Lobby.Teleport2, 1)
+                until game.Players.LocalPlayer.Character:FindFirstChild("entered")
+                wait(0.4)
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") then
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(151.03038, 359.984222, 43.2965469, 0.852800727, 4.08886862e-08, 0.522236466, 8.56088089e-09, 1, -9.227508e-08, -0.522236466, 8.31630587e-08, 0.852800727))                    
+                end
+                wait(0.2)               
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(1.2)
+                game:GetService("ReplicatedStorage").BombThrow:FireServer("Ebutton")
+                wait(0.75)
+                repeat task.wait()
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.DEATHBARRIER.CFrame)
+                until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health <= 0
+                repeat task.wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
+            end 
+        end
+        task.wait()
+    end	
+end})
+
+RobMastery:AddButton({Name = "Equip Rob", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2147429609) then
+        if game.Players.LocalPlayer.leaderstats.Glove.Value == "rob" then
+            game.StarterGui:SetCore("SendNotification", {Title = "You are already equipped Rob!", Duration = 5, Text = "" })
+        else
+            if game.Players.LocalPlayer.Character:FindFirstChild("entered") == nil then
+                fireclickdetector(game.Workspace.Lobby.rob.ClickDetector)
+            else
+                game.StarterGui:SetCore("SendNotification", {Title = "Can't equip Rob", Duration = 5, Text = "While in arena!" })
+            end
+        end
+   else
+       game.StarterGui:SetCore("SendNotification", {Title = "You do not own Rob!", Duration = 5, Text = "" })
+   end
+end})
+
+RobMastery:AddButton({Name = "Create a null portal and survive", Callback = function()
+    if game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2147429609) and game:GetService("BadgeService"):UserHasBadgeAsync(game.Players.LocalPlayer.UserId, 2125950512) then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.Origo.CFrame * CFrame.new(0,180,0)
+        wait(0.2)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+        wait(.2)
+        fireclickdetector(game.Workspace.Lobby.rob.ClickDetector)
+        wait(.1)
+        game:GetService("ReplicatedStorage").rob:FireServer(false)
+        wait(.2)   
+        fireclickdetector(game.Workspace.Lobby.bob.ClickDetector)
+        repeat task.wait() until game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name).Head.Transparency == 0
+        game:GetService("ReplicatedStorage").bob:FireServer()
+        wait(0.4)
+        repeat task.wait()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace:FindFirstChild("ÅBOB"..game.Players.LocalPlayer.Character.Name).HumanoidRootPart.CFrame
+        until game.Workspace:FindFirstChild("ÅBOB"..game.Players.LocalPlayer.Character.Name) == nil and game.Workspace:FindFirstChild("Blackhole_Particles")
+        wait(0.75)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.CannonIsland.Cannon.Base.CFrame * CFrame.new(0,0,35)
+    else
+        OrionLib:MakeNotification({Name = "Gloves Not Owned!", Content = "You do not own rob and bob", Time = 5})
+    end
+end})
+
+RobMastery:AddToggle({Name = "Auto 'Travel 25000 studs as rob over the void'", Default = false, Callback = function(Value)
+    _G.AutoTravelAsRob = Value
+    while _G.AutoTravelAsRob do       
+        if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name) then
+            repeat task.wait()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3, -6, 362)
+            wait(0.1)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-437, -6, -14)
+            wait(0.1)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(414, -6, -18)
+            wait(0.1)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-8, -6, -419)
+            until game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name) == nil
+            wait(0.75)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.Origo.CFrame * CFrame.new(0, -5, 0)
+        end
+        task.wait()
+    end
+end})
+
+RobMastery:AddToggle({Name = "Auto Absorb People", Default = false, Callback = function(Value)
+    _G.AutoAbsorbPeople = Value
+    while _G.AutoAbsorbPeople do       
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+        wait(0.3)
+        game:GetService("ReplicatedStorage").rob:FireServer(false)
+        wait(4.2)
+        for i, user in pairs(game.Players:GetChildren()) do
+            if user ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and user.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and user.Character:FindFirstChild("entered") and not user.Character:FindFirstChild("rock") and user.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not user.Character:FindFirstChild("stevebody") and not user.Character:FindFirstChild("Counterd") and not user.Character:FindFirstChild("Mirage") and user.leaderstats.Glove.Value ~= "Spectator" then
+                    repeat task.wait()
+                    v.CFrame = user.Character.HumanoidRootPart.CFrame
+                    until game.Workspace:FindFirstChild("rob_"..game.Players.LocalPlayer.Character.Name) == nil
+                    wait(0.75)
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+                end
+            end
+            wait(0.5)
+        end
+        task.wait()
+    end		
+end})
+
+Other_Tab:AddButton({Name = "Become Invisibility", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 666 then 
+        local EquippedGloves = game.Players.LocalPlayer.leaderstats.Glove.Value
+        fireclickdetector(game.Workspace.Lobby.Ghost.ClickDetector)
+        wait(0.2)
+        game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()       
+        wait(0.2)
+        fireclickdetector(game.Workspace.Lobby[EquippedGloves].ClickDetector)
+    else
+        game.StarterGui:SetCore("SendNotification", {Title = "You don't have 666+ slaps!", Duration = 5, Text = "" })
+    end
+end})
+
+Other_Tab:AddButton({Name = "Become Invisibility", Callback = function()
+    if game.Players.LocalPlayer.leaderstats.Slaps.Value >= 666 then 
+        local EquippedGloves = game.Players.LocalPlayer.leaderstats.Glove.Value
+        fireclickdetector(game.Workspace.Lobby.Ghost.ClickDetector)
+        wait(0.2)
+        game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()       
+        wait(0.2)
+        fireclickdetector(game.Workspace.Lobby[EquippedGloves].ClickDetector)
+    else
+        game.StarterGui:SetCore("SendNotification", {Title = "You don't have 666+ slaps!", Duration = 5, Text = "" })
+    end
+end})
+
+Other_Tab:AddButton({Name = "Teleport to SafeSpot", Callback = function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 20, 0))
+end})
+
+Credits_Tab:AddSection({Name = "Script is made by BaconScripter"})
+Credits_Tab:AddLabel("All social media below")
+Credits_Tab:AddButton({Name = "YouTube Channel", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied YouTube Channel Links", Content = "", Time = 5 })
+    setclipboard("https://youtube.com/@baconscripters?si=q84G7kJJbbCbIwdv")
+end})
+
+Credits_Tab:AddButton({Name = "Discord Server", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied DC Server Links", Content = "", Time = 5 })
+    setclipboard("https://discord.gg/RQks2STrZb")
+end})
+elseif game.PlaceId == 11520107397 then
+if game.ReplicatedStorage:FindFirstChild("AdminGUI") then
+    game.ReplicatedStorage.AdminGUI:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("Ban") then
+    game.ReplicatedStorage.Ban:Destroy()
+end
+if game.StarterPlayer.StarterPlayerScripts:FindFirstChild("ClientAnticheat") then
+    game.StarterPlayer.StarterPlayerScripts.ClientAnticheat:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("GRAB") then
+    game.ReplicatedStorage.GRAB:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("SpecialGloveAccess") then
+    game.ReplicatedStorage.SpecialGloveAccess:Destroy()
+end
+if game.ReplicatedStorage:FindFirstChild("WalkSpeedChanged") then
+    game.ReplicatedStorage.WalkSpeedChanged:Destroy()
+end
+
+if game.Workspace:FindFirstChild("SafeSpot") == nil then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if game.Workspace.SafeSpot:FindFirstChild("ToTPAfterSlappedPeople") == nil then
+    local ToTPAfterSlappedPeople = Instance.new("Part", game.Workspace.SafeSpot)
+    ToTPAfterSlappedPeople.Name = "ToTPAfterSlappedPeople"
+    ToTPAfterSlappedPeople.Position = Vector3.new(14.053071975708008, 6000, -3.2118124961853027)
+    ToTPAfterSlappedPeople.Size = Vector3.new(10, 2, 10)
+    ToTPAfterSlappedPeople.Anchored = true
+    ToTPAfterSlappedPeople.Transparency = 1
+end
+
+local OrionLib = loadstring(game:HttpGet(("https://raw.githubusercontent.com/Articles-Hub/ROBLOXScript/refs/heads/main/Library/Orion/Source.lua")))()
+local Window = OrionLib:MakeWindow({Name = "Mastery Farm | KILLSTREAK ONLY", IntroText = "Loading...", SearchBar = {Default = "Search Tabs", ClearTextOnFocus = false}, HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = false})
+
+local KillstreakMastery = Window:MakeTab({Name = "Killstreak Mastery", Icon = "rbxassetid://128404861901604", PremiumOnly = false})
+local Credits_Tab = Window:MakeTab({Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+KillstreakMastery:AddToggle({Name = "Kill Farm", Default = false, Callback = function(Value)
+    _G.KillFarm = Value
+    while _G.KillFarm do       
+        for i,v in pairs(game.Players:GetChildren()) do    
+            if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Character:FindFirstChild("entered") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                    wait(0.4)
+                    game.ReplicatedStorage.KSHit:FireServer(v.Character.HumanoidRootPart, true)
+                    wait(0.2)
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Workspace.SafeSpot.ToTPAfterSlappedPeople.CFrame * CFrame.new(0, 10, 0))
+                    wait(3)
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+Credits_Tab:AddSection({Name = "Script is made by BaconScripter"})
+Credits_Tab:AddLabel("All social media below")
+Credits_Tab:AddButton({Name = "YouTube Channel", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied YouTube Channel Links", Content = "", Time = 5 })
+    setclipboard("https://youtube.com/@baconscripters?si=q84G7kJJbbCbIwdv")
+end})
+
+Credits_Tab:AddButton({Name = "Discord Server", Callback = function()
+    OrionLib:MakeNotification({Name = "Copied DC Server Links", Content = "", Time = 5 })
+    setclipboard("https://discord.gg/RQks2STrZb")
+end})
+else
+    game.StarterGui:SetCore("SendNotification", {Title = "Game Has Not Supported!", Duration = 10, Text = "", Icon = "rbxassetid://16678850189" })
+end
