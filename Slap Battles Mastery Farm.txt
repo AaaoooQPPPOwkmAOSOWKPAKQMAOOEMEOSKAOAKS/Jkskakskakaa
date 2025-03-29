@@ -2681,10 +2681,15 @@ Credits_Tab:AddButton({Name = "Discord Server", Callback = function()
 end})
 elseif game.PlaceId == 11520107397 then
 local PlayersList = {}
-for i,v in pairs(game.Players:GetChildren()) do
-    if v ~= game.Players.LocalPlayer and v.Character then
-        table.insert(PlayersList, v.Character.Name)
+
+function UpdatePlayers()
+    PlayersList = {}
+    for i, v in pairs(game.Players:GetChildren()) do
+        if v ~= game.Players.LocalPlayer and v.Character then
+            table.insert(PlayersList, v.Character.Name)
+        end
     end
+    PLAYERLIST:Refresh(PlayersList)
 end
 
 if game.ReplicatedStorage:FindFirstChild("AdminGUI") then
@@ -2719,7 +2724,6 @@ if not game.Workspace.SafeSpot:FindFirstChild("ToTPAfterSlappedPeople") then
     ToTPAfterSlappedPeople.Anchored = true
     ToTPAfterSlappedPeople.Transparency = 1
 end
-
 local OrionLib = loadstring(game:HttpGet(("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Orion%20Library.lua")))()
 local Window = OrionLib:MakeWindow({Name = "Mastery Farm | KILLSTREAK ONLY", IntroText = "Loading...", HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = false})
 
@@ -2727,12 +2731,12 @@ local KillstreakMastery = Window:MakeTab({Name = "Killstreak Mastery", Icon = "r
 local Other_Tab = Window:MakeTab({Name = "Other", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 local Credits_Tab = Window:MakeTab({Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
-PLAYERLIST = KillstreakMastery:AddDropdown({Name = "Players List", Default = "", Options = {PlayersList}, Callback = function(Value)
+local PLAYERLIST = KillstreakMastery:AddDropdown({Name = "Players List", Default = "", Options = PlayersList, Callback = function(Value)
     _G.PlayersListed = Value
 end})
 
 KillstreakMastery:AddButton({Name = "Update Players List", Callback = function()
-    PLAYERLIST:Set(PlayersList)
+    UpdatePlayers()
 end})
 
 KillstreakMastery:AddToggle({Name = "Helps People Getting Kill", Default = false, Callback = function(Value)
