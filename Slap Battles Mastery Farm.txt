@@ -2681,7 +2681,7 @@ Credits_Tab:AddButton({Name = "Discord Server", Callback = function()
 end})
 elseif game.PlaceId == 11520107397 then
 local PlayersList = {}
-for i,v in pairs(game.Players:GetChildren())
+for i,v in pairs(game.Players:GetChildren()) do
     if v ~= game.Players.LocalPlayer and v.Character then
         table.insert(PlayersList, v.Character.Name)
     end
