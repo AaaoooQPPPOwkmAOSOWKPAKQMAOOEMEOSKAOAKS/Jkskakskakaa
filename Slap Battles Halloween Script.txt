@@ -1,0 +1,587 @@
+if game.PlaceId == 6403373529 then
+if not game.Workspace:FindFirstChild("SafeSpot") then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") then
+	local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part1.Name = "Part1"
+	Part1.Position = Vector3.new(20000, 0, 20000)
+	Part1.Size = Vector3.new(200, 10 ,200)
+	Part1.Anchored = true
+	Part1.Transparency = .5
+	Part1.Material = "ForceField"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part2") then
+	local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part2.Name = "Part2"
+	Part2.Position = Vector3.new(19905, 55, 20000)
+	Part2.Size = Vector3.new(10, 100, 200)
+	Part2.Anchored = true
+	Part2.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part3") then
+	local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part3.Name = "Part3"
+	Part3.Position = Vector3.new(20095, 55, 20000)
+	Part3.Size = Vector3.new(10, 100, 200)
+	Part3.Anchored = true
+	Part3.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part4") then
+	local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part4.Name = "Part4"
+	Part4.Position = Vector3.new(20000, 55, 20095)
+	Part4.Size = Vector3.new(180, 100, 10)
+	Part4.Anchored = true
+	Part4.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part5") then
+	local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part5.Name = "Part5"
+	Part5.Position = Vector3.new(20000, 55, 19905)
+	Part5.Size = Vector3.new(180, 100, 10)
+	Part5.Anchored = true
+	Part5.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part6") then
+	local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part6.Name = "Part6"
+	Part6.Position = Vector3.new(20000, 110, 20000)
+	Part6.Size = Vector3.new(200, 10, 200)
+	Part6.Anchored = true
+	Part6.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Checkmark") then
+    local checkmark = Instance.new("Part", game.Workspace.SafeSpot)
+    checkmark.Name = "Checkmark"
+    checkmark.Position = Vector3.new(20000, 55, 20000)
+    checkmark.Size = Vector3.new(200, 120, 200)
+    checkmark.Anchored = true
+    checkmark.CanCollide = false
+    checkmark.Transparency = 1
+end
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Slap Battles")
+
+local Section = Window:AddFolder("HALLOWEEN")
+
+Section:AddToggle({text = "Candy Farm", state = false, callback = function(Value)
+    _G.CandyFarm = Value
+    while _G.CandyFarm do       
+        for i,v in pairs(game.Workspace.CandyCorns:GetChildren()) do
+            pcall(function()   
+                v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end)
+        end    
+        task.wait()
+    end
+end})
+
+Section:AddButton({text = "Safespot", callback = function()
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+        local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.SafeSpot.Checkmark.Position).Magnitude
+        if not (distance <= (workspace.SafeSpot.Checkmark.Size.Magnitude / 2.8)) then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+        else
+            if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -6, 0)
+            end    
+        end
+    end
+end})
+
+Section:AddButton({text = "Teleport To Pim's Corn Maze", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.Halloween_Decorations.PimsCornMazeEntry.TeleportMain.Hitbox.CFrame
+end})
+
+Section:AddButton({text = "Teleport To BossFight", callback = function()
+    game:GetService("TeleportService"):Teleport(103505724406848)
+end})
+
+local Section1 = Window:AddFolder("For Hallow Jack")
+
+Section1:AddLabel({text = "Not recommended to use this features below"})
+Section1:AddLabel({text = "higher chance to get banned if ur getting recorded"})
+
+Section1:AddToggle({text = "Auto Get Kills", state = false, callback = function(Value)
+    _G.AutoGetKills = Value
+    while _G.AutoGetKills do
+        for _,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                    if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Players.LocalPlayer.leaderstats.Glove.Value == "Killstreak" and v.Character:FindFirstChild("entered") then
+                        if not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") and v.leaderstats.Glove.Value ~= "Elude" and v.leaderstats.Glove.Value ~= "Spectator" then
+                            if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                                wait(0.15)
+                                game.ReplicatedStorage.KSHit:FireServer(v.Character.HumanoidRootPart, true)
+                                wait(0.1)
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+                                task.wait(3.2)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+Section1:AddToggle({text = "Auto Grave", state = false, callback = function(Value)
+    _G.AutoGrave = Value
+    while _G.AutoGrave do
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name == "Gravestone" then
+                if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") and game:GetService("Players").LocalPlayer.Character:FindFirstChild("KillstreakLevel") and game:GetService("Players").LocalPlayer.Character.KillstreakLevel.Value >= 10 then
+                    fireclickdetector(v.ClickDetector)
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+Window:AddLabel({text = "YouTube: @BaconScripter."})
+
+Library:Init()
+elseif game.PlaceId == 9015014224 then
+if not game.Workspace:FindFirstChild("SafeSpot") then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") then
+	local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part1.Name = "Part1"
+	Part1.Position = Vector3.new(20000, 0, 20000)
+	Part1.Size = Vector3.new(200, 10 ,200)
+	Part1.Anchored = true
+	Part1.Transparency = .5
+	Part1.Material = "ForceField"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part2") then
+	local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part2.Name = "Part2"
+	Part2.Position = Vector3.new(19905, 55, 20000)
+	Part2.Size = Vector3.new(10, 100, 200)
+	Part2.Anchored = true
+	Part2.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part3") then
+	local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part3.Name = "Part3"
+	Part3.Position = Vector3.new(20095, 55, 20000)
+	Part3.Size = Vector3.new(10, 100, 200)
+	Part3.Anchored = true
+	Part3.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part4") then
+	local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part4.Name = "Part4"
+	Part4.Position = Vector3.new(20000, 55, 20095)
+	Part4.Size = Vector3.new(180, 100, 10)
+	Part4.Anchored = true
+	Part4.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part5") then
+	local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part5.Name = "Part5"
+	Part5.Position = Vector3.new(20000, 55, 19905)
+	Part5.Size = Vector3.new(180, 100, 10)
+	Part5.Anchored = true
+	Part5.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part6") then
+	local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part6.Name = "Part6"
+	Part6.Position = Vector3.new(20000, 110, 20000)
+	Part6.Size = Vector3.new(200, 10, 200)
+	Part6.Anchored = true
+	Part6.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Checkmark") then
+    local checkmark = Instance.new("Part", game.Workspace.SafeSpot)
+    checkmark.Name = "Checkmark"
+    checkmark.Position = Vector3.new(20000, 55, 20000)
+    checkmark.Size = Vector3.new(200, 120, 200)
+    checkmark.Anchored = true
+    checkmark.CanCollide = false
+    checkmark.Transparency = 1
+end
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Slap Battles")
+
+local Section = Window:AddFolder("HALLOWEEN")
+
+Section:AddToggle({text = "Candy Farm", state = false, callback = function(Value)
+    _G.CandyFarm = Value
+    while _G.CandyFarm do       
+        for i,v in pairs(game.Workspace.CandyCorns:GetChildren()) do
+            pcall(function()   
+                v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end)
+        end    
+        task.wait()
+    end
+end})
+
+Section:AddButton({text = "Safespot", callback = function()
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+        local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.SafeSpot.Checkmark.Position).Magnitude
+        if not (distance <= (workspace.SafeSpot.Checkmark.Size.Magnitude / 2.8)) then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+        else
+            if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -6, 0)
+            end    
+        end
+    end
+end})
+
+Section:AddButton({text = "Teleport To Pim's Corn Maze", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.Halloween_Decorations.PimsCornMazeEntry.TeleportMain.Hitbox.CFrame
+end})
+
+Section:AddButton({text = "Teleport To BossFight", callback = function()
+    game:GetService("TeleportService"):Teleport(103505724406848)
+end})
+
+Window:AddLabel({text = "YouTube: @BaconScripter."})
+
+Library:Init()
+elseif game.PlaceId == 11520107397 then
+if not game.Workspace:FindFirstChild("SafeSpot") then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") then
+	local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part1.Name = "Part1"
+	Part1.Position = Vector3.new(20000, 0, 20000)
+	Part1.Size = Vector3.new(200, 10 ,200)
+	Part1.Anchored = true
+	Part1.Transparency = .5
+	Part1.Material = "ForceField"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part2") then
+	local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part2.Name = "Part2"
+	Part2.Position = Vector3.new(19905, 55, 20000)
+	Part2.Size = Vector3.new(10, 100, 200)
+	Part2.Anchored = true
+	Part2.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part3") then
+	local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part3.Name = "Part3"
+	Part3.Position = Vector3.new(20095, 55, 20000)
+	Part3.Size = Vector3.new(10, 100, 200)
+	Part3.Anchored = true
+	Part3.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part4") then
+	local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part4.Name = "Part4"
+	Part4.Position = Vector3.new(20000, 55, 20095)
+	Part4.Size = Vector3.new(180, 100, 10)
+	Part4.Anchored = true
+	Part4.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part5") then
+	local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part5.Name = "Part5"
+	Part5.Position = Vector3.new(20000, 55, 19905)
+	Part5.Size = Vector3.new(180, 100, 10)
+	Part5.Anchored = true
+	Part5.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part6") then
+	local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part6.Name = "Part6"
+	Part6.Position = Vector3.new(20000, 110, 20000)
+	Part6.Size = Vector3.new(200, 10, 200)
+	Part6.Anchored = true
+	Part6.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Checkmark") then
+    local checkmark = Instance.new("Part", game.Workspace.SafeSpot)
+    checkmark.Name = "Checkmark"
+    checkmark.Position = Vector3.new(20000, 55, 20000)
+    checkmark.Size = Vector3.new(200, 120, 200)
+    checkmark.Anchored = true
+    checkmark.CanCollide = false
+    checkmark.Transparency = 1
+end
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Slap Battles")
+
+local Section = Window:AddFolder("HALLOWEEN")
+
+Section:AddToggle({text = "Candy Farm", state = false, callback = function(Value)
+    _G.CandyFarm = Value
+    while _G.CandyFarm do       
+        for i,v in pairs(game.Workspace.CandyCorns:GetChildren()) do
+            pcall(function()   
+                v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end)
+        end    
+        task.wait()
+    end
+end})
+
+Section:AddButton({text = "Safespot", callback = function()
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+        local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.SafeSpot.Checkmark.Position).Magnitude
+        if not (distance <= (workspace.SafeSpot.Checkmark.Size.Magnitude / 2.8)) then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+        else
+            if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -6, 0)
+            end    
+        end
+    end
+end})
+
+Section:AddButton({text = "Teleport To Pim's Corn Maze", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.Halloween_Decorations.PimsCornMazeEntry.TeleportMain.Hitbox.CFrame
+end})
+
+Section:AddButton({text = "Teleport To BossFight", callback = function()
+    game:GetService("TeleportService"):Teleport(103505724406848)
+end})
+
+local Section1 = Window:AddFolder("For Hallow Jack")
+
+Section1:AddLabel({text = "Not recommended to use this features below"})
+Section1:AddLabel({text = "higher chance to get banned if ur getting recorded"})
+
+Section1:AddToggle({text = "Auto Get Kills", state = false, callback = function(Value)
+    _G.AutoGetKills = Value
+    while _G.AutoGetKills do
+        for _,v in pairs(game.Players:GetChildren()) do
+            if v ~= game.Players.LocalPlayer and v.Character then
+                if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character then
+                    if game.Players.LocalPlayer.Character:FindFirstChild("entered") and game.Players.LocalPlayer.leaderstats.Glove.Value == "Killstreak" and v.Character:FindFirstChild("entered") then
+                        if not v.Character:FindFirstChild("rock") and v.Character.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") and not v.Character:FindFirstChild("Reversed") and not v.Character:FindFirstChild("stevebody") and v.leaderstats.Glove.Value ~= "Elude" and v.leaderstats.Glove.Value ~= "Spectator" then
+                            if not v.Character:FindFirstChild("BlockedV") and not v.Character:FindFirstChild("Counterd") and not v.Character:FindFirstChild("Mirage") and v.Character.Ragdolled.Value == false then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.Head.CFrame * CFrame.new(0, 6, 0)
+                                wait(0.15)
+                                game.ReplicatedStorage.KSHit:FireServer(v.Character.HumanoidRootPart, true)
+                                wait(0.1)
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+                                task.wait(3.2)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+Section1:AddToggle({text = "Auto Grave", state = false, callback = function(Value)
+    _G.AutoGrave = Value
+    while _G.AutoGrave do
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v.Name == "Gravestone" then
+                if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") and game:GetService("Players").LocalPlayer.Character:FindFirstChild("KillstreakLevel") and game:GetService("Players").LocalPlayer.Character.KillstreakLevel.Value >= 10 then
+                    fireclickdetector(v.ClickDetector)
+                end
+            end
+        end
+        task.wait()
+    end
+end})
+
+Window:AddLabel({text = "YouTube: @BaconScripter."})
+
+Library:Init()
+elseif game.PlaceId == 124596094333302 then
+if not game.Workspace:FindFirstChild("SafeSpot") then
+    local SafeSpot = Instance.new("Model", game.Workspace)
+    SafeSpot.Name = "SafeSpot"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part1") then
+	local Part1 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part1.Name = "Part1"
+	Part1.Position = Vector3.new(20000, 0, 20000)
+	Part1.Size = Vector3.new(200, 10 ,200)
+	Part1.Anchored = true
+	Part1.Transparency = .5
+	Part1.Material = "ForceField"
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part2") then
+	local Part2 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part2.Name = "Part2"
+	Part2.Position = Vector3.new(19905, 55, 20000)
+	Part2.Size = Vector3.new(10, 100, 200)
+	Part2.Anchored = true
+	Part2.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part3") then
+	local Part3 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part3.Name = "Part3"
+	Part3.Position = Vector3.new(20095, 55, 20000)
+	Part3.Size = Vector3.new(10, 100, 200)
+	Part3.Anchored = true
+	Part3.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part4") then
+	local Part4 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part4.Name = "Part4"
+	Part4.Position = Vector3.new(20000, 55, 20095)
+	Part4.Size = Vector3.new(180, 100, 10)
+	Part4.Anchored = true
+	Part4.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part5") then
+	local Part5 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part5.Name = "Part5"
+	Part5.Position = Vector3.new(20000, 55, 19905)
+	Part5.Size = Vector3.new(180, 100, 10)
+	Part5.Anchored = true
+	Part5.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Part6") then
+	local Part6 = Instance.new("Part", game.Workspace.SafeSpot)
+	Part6.Name = "Part6"
+	Part6.Position = Vector3.new(20000, 110, 20000)
+	Part6.Size = Vector3.new(200, 10, 200)
+	Part6.Anchored = true
+	Part6.Transparency = 1
+end
+
+if not game.Workspace.SafeSpot:FindFirstChild("Checkmark") then
+    local checkmark = Instance.new("Part", game.Workspace.SafeSpot)
+    checkmark.Name = "Checkmark"
+    checkmark.Position = Vector3.new(20000, 55, 20000)
+    checkmark.Size = Vector3.new(200, 120, 200)
+    checkmark.Anchored = true
+    checkmark.CanCollide = false
+    checkmark.Transparency = 1
+end
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Slap Battles")
+
+local Section = Window:AddFolder("HALLOWEEN")
+
+Section:AddToggle({text = "Candy Farm", state = false, callback = function(Value)
+    _G.CandyFarm = Value
+    while _G.CandyFarm do       
+        for i,v in pairs(game.Workspace.CandyCorns:GetChildren()) do
+            pcall(function()   
+                v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end)
+        end    
+        task.wait()
+    end
+end})
+
+Section:AddButton({text = "Safespot", callback = function()
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+        local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.SafeSpot.Checkmark.Position).Magnitude
+        if not (distance <= (workspace.SafeSpot.Checkmark.Size.Magnitude / 2.8)) then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.SafeSpot.Part1.CFrame * CFrame.new(0, 8, 0)
+        else
+            if game:GetService("Players").LocalPlayer.Character:FindFirstChild("entered") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -6, 0)
+            end    
+        end
+    end
+end})
+
+Section:AddButton({text = "Teleport To Pim's Corn Maze", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Arena.Halloween_Decorations.PimsCornMazeEntry.TeleportMain.Hitbox.CFrame
+end})
+
+Section:AddButton({text = "Teleport To BossFight", callback = function()
+    game:GetService("TeleportService"):Teleport(103505724406848)
+end})
+
+Window:AddLabel({text = "YouTube: @BaconScripter."})
+
+Library:Init()
+elseif game.PlaceId == 92483185275059 then
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Pim's Corn Maze")
+
+Window:AddButton({text = "Exit the maze", callback = function()
+    game.Players.LocalPlayer.Character:PivotTo(workspace.Maze.transition.visual["Neon Exit Sign"]:GetPivot())
+    wait(0.3)
+    for i,v in pairs(workspace:GetDescendants()) do
+        if v.Name == "EndPrompt" and v:IsA("ProximityPrompt") then
+            fireproximityprompt(v)
+        end
+    end
+end})
+
+Window:AddButton({text = "Teleport To The Glove", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Maze.BarnMaze.CoreParts.ChaseStart.CFrame
+end})
+
+Window:AddButton({text = "Teleport To The End", callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Maze.BarnMaze.CoreParts.ChaseEnd.CFrame
+end})
+
+Window:AddLabel({text = "YouTube: @BaconScripter."})
+
+Library:Init()
+elseif game.PlaceId == 103505724406848 then
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0-BaconScripter-0/Mobile-Support-For-UI-Library/refs/heads/main/Unnamed.lua"))()
+local Window = Library:CreateWindow("Zombies")
+
+Window:AddToggle({text = "Kill Aura", state = false, callback = function(Value)
+    _G.KillAura = Value
+    spawn(function()
+        while _G.KillAura and task.wait() do       
+            if game:GetService("Workspace"):WaitForChild("Enemies"):FindFirstChild("Boss Zombie") then
+                for i = 1,5 do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("GeneralHit"):FireServer(game:GetService("Workspace").Enemies["Boss Zombie"]:FindFirstChild("Head"))
+                end
+            end
+        end
+    end)
+    while _G.KillAura do       
+        for _, v in pairs(workspace.Enemies:GetChildren()) do 
+            if v:FindFirstChild("HumanoidRootPart") and v.Ragdolled.Value == false and not v:FindFirstChild("Boss Zombie") then
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("GeneralHit"):FireServer(v:FindFirstChild("Head"))
+            end
+        end
+        wait(2)    
+        task.wait()
+    end
+end})
+
+Library:Init()
+else
+    game.StarterGui:SetCore("SendNotification", {Title = "Game Has Not Supported!", Duration = 10, Text = "", Icon = "rbxassetid://16678850189" })
+end
