@@ -1,8 +1,16 @@
+--[[
+Variables
+]]
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+--[[
+Slap Battles Group
+]]
 local GroupId = 9950771
-
+--[[
+peoples that are staff ingame
+]]
 local SBStaff = {
 ["Trial Staff"] = true,
 ["Junior Staff"] = true,
@@ -18,6 +26,30 @@ local SBStaff = {
 ["Lead Developer"] = true,
 ["Owner"] = true
 }
+--[[
+Bypasses Anti Cheats 
+]]
+if ReplicatedStorage.Remotes:FindFirstChild("ModerationRemote") then
+ReplicatedStorage.Remotes.ModerationRemote:Destroy()
+end
+if ReplicatedStorage.Remotes:FindFirstChild("LegacyAntiCheatFunction") then
+ReplicatedStorage.Remotes.LegacyAntiCheatFunction:Destroy()
+end
+if ReplicatedStorage.Remotes:FindFirstChild("Ban") then
+ReplicatedStorage.Remotes.Ban:Destroy()
+end
+if ReplicatedStorage.Remotes:FindFirstChild("LegacyBan")
+ReplicatedStorage.Remotes.LegacyBan:Destroy()
+end
+if ReplicatedStorage.Remotes:FindFirstChild("KickedBind")
+ReplicatedStorage.Remotes.KickedBind:Destroy()
+end
+if ReplicatedStorage.Packages:FindFirstChild("HumanoidSpeed")
+ReplicatedStorage.Packages.HumanoidSpeed:Destroy()
+end
+if ReplicatedStorage:FindFirstChild("ACEventListen")
+ReplicatedStorage.ACEventListen:Destroy()
+end
 
 local Version = "1.6.66"
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/download/" .. Version .. "/main.lua"))()
@@ -54,7 +86,7 @@ Icon = "bird",
 Locked = false,
 })
 
-local Paragraph = Info:Paragraph({
+local Welcome = Info:Paragraph({
 Title = "@" .. player.Name,
 Desc = "Welcome to AWE Hub",
 Color = "White",
@@ -65,7 +97,7 @@ ThumbnailSize = 80,
 Locked = false,
 })
 
-local Paragraph = Info:Paragraph({
+local Credits = Info:Paragraph({
 Title = "Credits",
 Desc = "Owner & Scripter - BaconScripter\nPeviously Owner - screptmaster\n\nthanks for using AWE :)",
 Color = "White",
