@@ -1,0 +1,1686 @@
+--[[ Variables ]]
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local character = player.Character
+local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+local humanoidrootpart = character and character:FindFirstChild("HumanoidRootPart")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local HttpService = game:GetService("HttpService")
+local antiacid = nil
+local antilava = nil
+local antilava2 = nil
+_G.Glove = false
+_G.Kills = false
+_G.Power = false
+_G.Speed = false
+_G.JumpPower = false
+_G.Health = false
+_G.SlapAura = false
+local speeddistance = 3
+local boostcooldown = 2.5
+local tomahawkRange = 20
+local hrpsize = 5
+local Lighting = game:GetService("Lighting")
+
+--[[ Configuration System ]]
+local ConfigFileName = "AWEHub_SlapRoyale_Config.json"
+
+-- Table holding all configurable settings & toggle states
+local ConfigData = {
+	StaffDetection = false,
+	WalkSpeed = false,
+	SpeedValue = 20,
+	SpeedBoost = false,
+	SpeedDistance = 10,
+	BoostCooldown = 2.5,
+	FastSpeed = false,
+	InfiniteJump = false,
+	GoUnderMap = false,
+	AntiZoneBlur = false,
+	Hitbox = false,
+	HitboxSize = 5,
+	SlapAura = false,
+	TomahawkAura = false,
+	TomahawkRange = 20,
+	TomahawkAimbot = false,
+	AntiRagdoll = false,
+	AntiAcid = false,
+	AntiLava = false,
+	AntiIceCubes = false,
+	AntiCubeOfDeath = false,
+	AntiKillBrick = false,
+	DeleteSeats = false,
+	Glove = false,
+	Kills = false,
+	Power = false,
+	Health = false,
+	Speed = false,
+	JumpPower = false,
+	PlayersESP = false,
+	ItemsESP = false,
+	GloveESP = false,
+	AutoCollect = false,
+	SelectedAutoCollectItem = "Apple",
+	AutoUseItems = false,
+	AutoBombBus = false,
+}
+
+local function SaveConfig()
+	local success, encoded = pcall(function()
+		return HttpService:JSONEncode(ConfigData)
+	end)
+	if success and writefile then
+		pcall(function()
+			writefile(ConfigFileName, encoded)
+		end)
+	end
+end
+
+local function LoadConfig()
+	if readfile and isfile and isfile(ConfigFileName) then
+		local success, decoded = pcall(function()
+			return HttpService:JSONDecode(readfile(ConfigFileName))
+		end)
+		if success and type(decoded) == "table" then
+			for k, v in pairs(decoded) do
+				if ConfigData[k] ~= nil then
+					ConfigData[k] = v
+				end
+			end
+		end
+	end
+end
+
+-- Load existing config on startup
+LoadConfig()
+
+--[[ Functions ]]
+local Combat = {
+	HitboxSize = 10,
+	HitboxMinSize = 10,
+	HitboxMaxSize = 20,
+	HitboxTransparency = 0.85,
+	HitboxColor = Color3.fromRGB(0, 0, 0),
+	HitboxExpanded = false,
+	HitboxVisible = true,
+	SavedHitboxes = {},
+	HitboxConnection = nil,
+	HitboxCharacterConnections = {},
+	HitboxStatusConnections = {},
+	HitboxRefreshInterval = 0.35,
+	LastHitboxRefresh = 0,
+	PlayerTpButtonsEnabled = false,
+	PlayerTpButtonGuis = {},
+	PlayerTpButtonConnections = {},
+	PlayerTpButtonPlayerConnections = {},
+	PlayerTpButtonPlayerAddedConnection = nil,
+	AutoGloveTapEnabled = false,
+	AutoGloveTapConnection = nil,
+	AutoGloveTapThread = nil,
+	AutoGloveTapDebounce = 0.12,
+	AutoGloveTapScanInterval = 0.22,
+	LastAutoGloveTap = 0,
+	LastAutoGloveScan = 0,
+	SlapAuraEnabled = ConfigData.SlapAura,
+	SlapAuraThread = nil,
+	SlapAuraRange = 20,
+	SlapAuraInterval = 0.45,
+	SlapAuraFastInterval = 0.45,
+	SlapAuraDefaultInterval = 2.2,
+	SlapAuraMode = "Fast",
+	SlapAuraIgnoreFriends = false,
+	SlapAuraIgnoredPlayersText = "",
+	SlapAuraIgnoredLookup = {},
+	SlapAuraIgnoredDropdownLookup = {},
+	SlapAuraIgnoredDropdown = nil,
+	SlapAuraFriendCache = {},
+	SlapRemote = nil,
+	SlapAuraKeybind = Enum.KeyCode.G,
+	SlapAuraKeybindName = "G",
+	SlapAuraKeybindConnection = nil,
+}
+
+function Combat.GetSlapRemote()
+	local cached = Combat.SlapRemote
+	if cached and cached.Parent and cached:IsA("RemoteEvent") then
+		return cached
+	end
+	local remotes = ReplicatedStorage:FindFirstChild("Remotes")
+	local remote = remotes and remotes:FindFirstChild("Slap")
+	if remote and remote:IsA("RemoteEvent") then
+		Combat.SlapRemote = remote
+		return remote
+	end
+	Combat.SlapRemote = nil
+	return nil
+end
+
+function Combat.SetSlapAuraMode(mode, silent)
+	mode = tostring(mode or "Fast")
+	if mode ~= "Default" then
+		mode = "Fast"
+	end
+	Combat.SlapAuraMode = mode
+	Combat.SlapAuraInterval = mode == "Default" and Combat.SlapAuraDefaultInterval or Combat.SlapAuraFastInterval
+	Combat.AutoGloveTapDebounce = mode == "Default" and Combat.SlapAuraDefaultInterval or 0.12
+end
+
+function Combat.SetSlapAuraIgnoreFriends(state)
+	Combat.SlapAuraIgnoreFriends = state == true
+end
+
+function Combat.CanUseSlapAuraTarget(targetPlayer, localCharacter, localRoot)
+	if targetPlayer == player then
+		return nil, nil
+	end
+	localCharacter = localCharacter or player.Character
+	localRoot = localRoot or (localCharacter and localCharacter:FindFirstChild("HumanoidRootPart"))
+	local targetCharacter = targetPlayer.Character
+	local targetRoot = targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart")
+	if not localCharacter or not localRoot or not targetCharacter or not targetRoot then
+		return nil, nil
+	end
+	if targetCharacter:FindFirstChild("Dead") then
+		return nil, nil
+	end
+	if targetCharacter:GetAttribute("inBus") == true or localCharacter:GetAttribute("inBus") == true then
+		return nil, nil
+	end
+	if targetCharacter:GetAttribute("inMatch") ~= true or localCharacter:GetAttribute("inMatch") ~= true then
+		return nil, nil
+	end
+	if localCharacter:GetAttribute("Ragdolled") ~= false then
+		return nil, nil
+	end
+	local offset = localRoot.Position - targetRoot.Position
+	if offset:Dot(offset) > Combat.SlapAuraRange * Combat.SlapAuraRange then
+		return nil, nil
+	end
+	return targetRoot, localRoot
+end
+
+function Combat.StartSlapAura()
+	if Combat.SlapAuraThread then
+		return
+	end
+	Combat.SlapAuraThread = task.spawn(function()
+		while Combat.SlapAuraEnabled do
+			local remote = Combat.GetSlapRemote()
+			local localCharacter = player.Character
+			local localRoot = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
+			if remote and localRoot then
+				for _, targetPlayer in ipairs(Players:GetPlayers()) do
+					local targetRoot = Combat.CanUseSlapAuraTarget(targetPlayer, localCharacter, localRoot)
+					if targetRoot then
+						pcall(function()
+							remote:FireServer(targetRoot)
+						end)
+					end
+				end
+			end
+			task.wait(Combat.SlapAuraInterval)
+		end
+		Combat.SlapAuraThread = nil
+	end)
+end
+
+function Combat.SetSlapAura(state, silent)
+	Combat.SlapAuraEnabled = state == true
+	ConfigData.SlapAura = state == true
+	SaveConfig()
+	if Combat.SlapAuraEnabled then
+		Combat.StartSlapAura()
+	end
+end
+
+local function GetPlayerInfo(target)
+	local targetChar = target.Character
+	if not targetChar then return "" end
+	local output = {}
+	if _G.Glive or ConfigData.Glove then
+		local glove = target:FindFirstChild("Glove") or (target:FindFirstChild("leaderstats") and target.leaderstats:FindFirstChild("Glove"))
+		if glove then
+			table.insert(output, "Glove: " .. tostring(glove.Value))
+		end
+	end
+	if ConfigData.Kills then
+		local kills = targetChar:GetAttribute("Kills")
+		if kills == nil and target:FindFirstChild("leaderstats") and target.leaderstats:FindFirstChild("Kills") then
+			kills = target.leaderstats.Kills.Value
+		end
+		if kills ~= nil then
+			table.insert(output, "Kills: " .. tostring(kills))
+		end
+	end
+	if ConfigData.Power then
+		local power = targetChar:GetAttribute("Power")
+		if power == nil and targetChar:FindFirstChild("Power") then
+			power = targetChar.Power.Value
+		end
+		if power == nil and target:FindFirstChild("leaderstats") and target.leaderstats:FindFirstChild("Power") then
+			power = target.leaderstats.Power.Value
+		end
+		if power ~= nil then
+			table.insert(output, "Power: " .. tostring(power))
+		end
+	end
+	if ConfigData.Health then
+		local hum = targetChar:FindFirstChildOfClass("Humanoid")
+		if hum then
+			table.insert(output, "HP: " .. tostring(math.floor(hum.Health + 0.5)) .. "/" .. tostring(math.floor(hum.MaxHealth + 0.5)))
+		end
+	end
+	if ConfigData.Speed then
+		local hum = targetChar:FindFirstChildOfClass("Humanoid")
+		if hum then
+			table.insert(output, "Speed: " .. tostring(math.floor(hum.WalkSpeed + 0.5)))
+		end
+	end
+	if ConfigData.JumpPower then
+		local hum = targetChar:FindFirstChildOfClass("Humanoid")
+		if hum then
+			local jp = hum.JumpPower > 0 and hum.JumpPower or hum.JumpHeight
+			table.insert(output, "JumpPower: " .. tostring(math.floor(jp + 0.5)))
+		end
+	end
+	return table.concat(output, "\n")
+end
+
+local function TP()
+	if humanoidrootpart and humanoid then
+		local direction = humanoid.MoveDirection
+		if direction.Magnitude > 0 then
+			direction = direction.Unit
+			local boxCFrame, boxSize = character:GetBoundingBox()
+			local rayParams = RaycastParams.new()
+			rayParams.FilterType = Enum.RaycastFilterType.Exclude
+			rayParams.FilterDescendantsInstances = {character}
+			local result = workspace:Blockcast(boxCFrame, boxSize, direction * speeddistance, rayParams)
+			local distance = speeddistance
+			if result then
+				distance = math.max(result.Distance - 0.5, 0)
+			end
+			if distance > 0 then
+				humanoidrootpart.CFrame += direction * distance
+			end
+		end
+	end
+end
+
+local function RemoveZoneEffects()
+	local blur = Lighting:FindFirstChild("ZoneBlur")
+	local color = Lighting:FindFirstChild("ZoneColorCorrection")
+	if blur then blur.Enabled = false end
+	if color then color.Enabled = false end
+end
+
+local function RemoveIceCube()
+	for i, v in pairs(character:GetChildren()) do
+		if v.Name == "Icecube" then v:Destroy() end
+	end
+end
+
+local function DeathCubes(touch)
+	for _, v in pairs(workspace:GetDescendants()) do
+		if v.Name == "Cube of Death" or v.Name == "Death" then
+			v.CanTouch = touch
+			v.CanQuery = touch
+		end
+	end
+end
+
+--[[ Slap Battles Group ]]
+local GroupId = 9950771
+local SBStaff = {
+	["Trial Staff"] = true,
+	["Junior Staff"] = true,
+	["Staff"] = true,
+	["Senior Staff"] = true,
+	["Staff Supervisor"] = true,
+	["Artist"] = true,
+	["OVERSEER"] = true,
+	["BOBA"] = true,
+	["VFX"] = true,
+	["Builder"] = true,
+	["Developer"] = true,
+	["Lead Developer"] = true,
+	["Owner"] = true
+}
+
+--[[ Bypasses Anti Cheats ]]
+pcall(function()
+	if ReplicatedStorage.Remotes:FindFirstChild("ModerationRemote") then ReplicatedStorage.Remotes.ModerationRemote:Destroy() end
+	if ReplicatedStorage.Remotes:FindFirstChild("LegacyAntiCheatFunction") then ReplicatedStorage.Remotes.LegacyAntiCheatFunction:Destroy() end
+	if ReplicatedStorage.Remotes:FindFirstChild("Ban") then ReplicatedStorage.Remotes.Ban:Destroy() end
+	if ReplicatedStorage.Remotes:FindFirstChild("LegacyBan") then ReplicatedStorage.Remotes.LegacyBan:Destroy() end
+	if ReplicatedStorage.Remotes:FindFirstChild("KickedBind") then ReplicatedStorage.Remotes.KickedBind:Destroy() end
+	if ReplicatedStorage.Packages:FindFirstChild("HumanoidSpeed") then ReplicatedStorage.Packages.HumanoidSpeed:Destroy() end
+	if ReplicatedStorage:FindFirstChild("ACEventListen") then ReplicatedStorage.ACEventListen:Destroy() end
+end)
+task.spawn(function()
+	pcall(function()
+		ReplicatedStorage:WaitForChild("_NETWORK"):WaitForChild("{725da1fc-d512-4e08-bcb4-39bc06317776}"):FireServer("Lag")
+	end)
+end)
+
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+WindUI:AddTheme({
+	Name = "Ocean Blue",
+	Accent = Color3.fromHex("#1F4F88"),
+	Background = Color3.fromHex("#163F78"),
+	Outline = Color3.fromHex("#4A75A7"),
+	Text = Color3.fromHex("#F5F8FC"),
+	Placeholder = Color3.fromHex("#B5C7DC"),
+	Button = Color3.fromHex("#315D91"),
+	Icon = Color3.fromHex("#AFCBE8"),
+})
+WindUI:SetTheme("Ocean Blue")
+
+local Window = WindUI:CreateWindow({
+	Title = "AWE Hub - Slap Royale",
+	Icon = "rbxassetid://80728661707224",
+	IconThemed = false,
+	Author = "by BaconScripter",
+	Theme = "Ocean Blue",
+	Transparent = false,
+	NewElements = true,
+})
+
+--[[ AWE Hub Status ]]
+local StatusGreen = Color3.fromHex("#21EF62")
+local VersionTag = Window:Tag({ Title = "V1", Color = StatusGreen, Radius = 13, Border = false })
+local FPSTag = Window:Tag({ Title = "FPS: --", Color = StatusGreen, Radius = 13, Border = false })
+local PingTag = Window:Tag({ Title = "Ping: --ms", Color = StatusGreen, Radius = 13, Border = false })
+
+local Frames = 0
+local FPSStarted = os.clock()
+RunService.RenderStepped:Connect(function()
+	Frames += 1
+end)
+task.spawn(function()
+	while task.wait(1) do
+		local Now = os.clock()
+		local Elapsed = math.max(Now - FPSStarted, 0.001)
+		local FPS = math.floor((Frames / Elapsed) + 0.5)
+		Frames = 0
+		FPSStarted = Now
+		local Ping = 0
+		pcall(function()
+			Ping = math.floor((player:GetNetworkPing() * 1000) + 0.5)
+		end)
+		pcall(function()
+			FPSTag:SetTitle("FPS: " .. tostring(FPS))
+		end)
+		pcall(function()
+			PingTag:SetTitle("Ping: " .. tostring(Ping) .. "ms")
+		end)
+	end
+end)
+
+local function Notification(title, content, duration, icon)
+	WindUI:Notify({Title = title, Content = content, Duration = duration, Icon = icon})
+end
+
+--[[ Tabs ]]
+local Info = Window:Tab({ Title = "Info", Icon = "info", Locked = false })
+local Game = Window:Tab({ Title = "Game", Icon = "gamepad-2", Locked = false })
+local PlayerMods = Window:Tab({ Title = "Player Mods", Icon = "gamepad-2", Locked = false })
+local CombatTab = Window:Tab({ Title = "Combat", Icon = "gamepad-2", Locked = false })
+local Immunites = Window:Tab({ Title = "Immunites", Icon = "gamepad-2", Locked = false })
+local ESP = Window:Tab({ Title = "Esp", Icon = "gamepad-2", Locked = false })
+local ConfigTab = Window:Tab({ Title = "Settings", Icon = "settings", Locked = false })
+
+local Welcome = Info:Paragraph({
+	Title = "@" .. player.Name,
+	Desc = "Welcome to AWE Hub",
+	Color = "White",
+	Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420),
+	ImageSize = 30,
+	Thumbnail = "",
+	ThumbnailSize = 80,
+	Locked = false,
+})
+
+local Credits = Info:Paragraph({
+	Title = "Credits",
+	Desc = "Owner & Scripter - BaconScripter\nPreviously Owner - screptmaster\n\nthanks for using AWE :)",
+	Color = "White",
+	Image = "rbxassetid://80728661707224",
+	ImageSize = 30,
+	Thumbnail = "",
+	ThumbnailSize = 80,
+	Locked = false,
+})
+
+-- Config Tab UI
+ConfigTab:Button({
+	Title = "Save Configuration",
+	Desc = "Manually saves all current states to file",
+	Callback = function()
+		SaveConfig()
+		Notification("Config", "Configuration saved successfully!", 3, "bird")
+	end
+})
+ConfigTab:Button({
+	Title = "Reload Configuration",
+	Desc = "Reloads configuration from file",
+	Callback = function()
+		LoadConfig()
+		Notification("Config", "Configuration reloaded. Re-execute script to apply values.", 4, "bird")
+	end
+})
+
+local StaffDetection = Game:Toggle({
+	Title = "Staff Detection",
+	Desc = "Automatically kicks you whenever a staff member is in your game.",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.StaffDetection,
+	Callback = function(Value)
+		ConfigData.StaffDetection = Value
+		SaveConfig()
+		while ConfigData.StaffDetection do
+			for i, v in pairs(Players:GetPlayers()) do
+				local role = v:GetRoleInGroup(GroupId)
+				if SBStaff[role] or (v:GetRankInGroup(GroupId) > 1) then
+					player:Kick("A staff joined the game")
+					break
+				end
+			end
+			task.wait()
+		end
+	end
+})
+
+Game:Divider()
+
+local BunkerCode = Game:Button({
+	Title = "Get Bunker Code",
+	Desc = "Shows a notification with bunker code",
+	Locked = false,
+	Callback = function()
+		pcall(function()
+			if game.Workspace.Map:WaitForChild("CodeBrick").SurfaceGui:FindFirstChild("IMGTemplate") then
+				game.Workspace.Map.CodeBrick.SurfaceGui.IMGTemplate.Name = "1st"
+				game.Workspace.Map.CodeBrick.SurfaceGui.IMGTemplate.Name = "2nd"
+				game.Workspace.Map.CodeBrick.SurfaceGui.IMGTemplate.Name = "3rd"
+				game.Workspace.Map.CodeBrick.SurfaceGui.IMGTemplate.Name = "4th"
+			end
+		end)
+		local first, second, third, fourth = 0,0,0,0
+		pcall(function()
+			for i,v in pairs(game.Workspace.Map.CodeBrick.SurfaceGui:GetChildren()) do
+				if v.Name == "1st" then
+					if v.Image == "http://www.roblox.com/asset/?id=9648769161" then first = "4"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648765536" then first = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648762863" then first = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648759883" then first = "9"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648755440" then first = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648752438" then first = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648749145" then first = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648745618" then first = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648742013" then first = "7"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648738553" then first = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648734698" then first = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648730082" then first = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648723237" then first = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648718450" then first = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648715920" then first = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648712563" then first = "2" end
+				end
+			end
+			for i,v in pairs(game.Workspace.Map.CodeBrick.SurfaceGui:GetChildren()) do
+				if v.Name == "2nd" then
+					if v.Image == "http://www.roblox.com/asset/?id=9648769161" then second = "4"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648765536" then second = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648762863" then second = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648759883" then second = "9"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648755440" then second = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648752438" then second = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648749145" then second = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648745618" then second = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648742013" then second = "7"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648738553" then second = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648734698" then second = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648730082" then second = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648723237" then second = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648718450" then second = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648715920" then second = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648712563" then second = "2" end
+				end
+			end
+			for i,v in pairs(game.Workspace.Map.CodeBrick.SurfaceGui:GetChildren()) do
+				if v.Name == "3rd" then
+					if v.Image == "http://www.roblox.com/asset/?id=9648769161" then third = "4"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648765536" then third = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648762863" then third = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648759883" then third = "9"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648755440" then third = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648752438" then third = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648749145" then third = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648745618" then third = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648742013" then third = "7"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648738553" then third = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648734698" then third = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648730082" then third = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648723237" then third = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648718450" then third = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648715920" then third = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648712563" then third = "2" end
+				end
+			end
+			for i,v in pairs(game.Workspace.Map.CodeBrick.SurfaceGui:GetChildren()) do
+				if v.Name == "4th" then
+					if v.Image == "http://www.roblox.com/asset/?id=9648769161" then fourth = "4"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648765536" then fourth = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648762863" then fourth = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648759883" then fourth = "9"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648755440" then fourth = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648752438" then fourth = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648749145" then fourth = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648745618" then fourth = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648742013" then fourth = "7"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648738553" then fourth = "8"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648734698" then fourth = "2"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648730082" then fourth = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648723237" then fourth = "3"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648718450" then fourth = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648715920" then fourth = "6"
+					elseif v.Image == "http://www.roblox.com/asset/?id=9648712563" then fourth = "2" end
+				end
+			end
+		end)
+		Notification("Bunker Code", "The code to the bunker is "..first..second..third..fourth, 5, "bird")
+	end
+})
+
+local OpenLabTP = Game:Button({
+	Title = "Open Lab + TP",
+	Desc = "Automatically solves the lab puzzle and teleports inside",
+	Locked = false,
+	Callback = function()
+		pcall(function()
+			local codes = {
+				["9648755440"] = "8", ["9648765536"] = "2", ["9648723237"] = "3", ["9648718450"] = "6",
+				["9648769161"] = "4", ["9648730082"] = "6", ["9648734698"] = "2", ["9648712563"] = "2",
+				["9648742013"] = "7", ["9648745618"] = "3", ["9648715920"] = "6", ["9648752438"] = "2",
+				["9648749145"] = "8", ["9648759883"] = "9", ["9648738553"] = "8"
+			}
+			local map = workspace:FindFirstChild("Map")
+			if not map then return end
+			local codeBrick = map:FindFirstChild("CodeBrick")
+			local surfaceGui = codeBrick and codeBrick:FindFirstChild("SurfaceGui")
+			if not surfaceGui then return end
+			local templates = {}
+			for _, obj in ipairs(surfaceGui:GetChildren()) do
+				if obj.Name == "IMGTemplate" then table.insert(templates, obj) end
+			end
+			if #templates ~= 4 then return end
+			table.sort(templates, function(a, b)
+				local ax = a.AbsolutePosition.X
+				local bx = b.AbsolutePosition.X
+				if math.abs(ax - bx) > 1 then return ax < bx end
+				return a.AbsolutePosition.Y < b.AbsolutePosition.Y
+			end)
+			local result = {}
+			for i, imageObject in ipairs(templates) do
+				local image = tostring(imageObject.Image)
+				local assetId = image:match("[?&]id=(%d+)") or image:match("rbxassetid://(%d+)") or image:match("(%d+)$")
+				local digit = assetId and codes[assetId]
+				if not digit then return end
+				result[i] = digit
+			end
+			local CodeEsp = table.concat(result)
+			local originOffice = map:FindFirstChild("OriginOffice")
+			if not originOffice then return end
+			local codeDoor = originOffice:FindFirstChild("CodeDoor")
+			local door = codeDoor and codeDoor:FindFirstChild("Door")
+			if not door then return end
+			local doorPart = door:IsA("BasePart") and door or door:FindFirstChildWhichIsA("BasePart", true)
+			if not doorPart then return end
+			local char = player.Character or player.CharacterAdded:Wait()
+			local rootPart = char:FindFirstChild("HumanoidRootPart")
+			if not rootPart then return end
+			local leftOffset = -doorPart.CFrame.RightVector * 20
+			local targetPosition = doorPart.Position + leftOffset
+			local currentRotation = rootPart.CFrame - rootPart.CFrame.Position
+			rootPart.CFrame = CFrame.new(targetPosition) * currentRotation
+			local keypad = door:FindFirstChild("Keypad")
+			local buttonsFolder = keypad and keypad:FindFirstChild("Buttons")
+			if not buttonsFolder then return end
+			local resetButton = buttonsFolder:FindFirstChild("Reset")
+			local resetDetector = resetButton and resetButton:FindFirstChildOfClass("ClickDetector")
+			if resetDetector then
+				fireclickdetector(resetDetector)
+				task.wait(0.2)
+			end
+			for i = 1, #CodeEsp do
+				local digit = CodeEsp:sub(i, i)
+				local button = buttonsFolder:FindFirstChild(digit)
+				if button then
+					local clickDetector = button:FindFirstChildOfClass("ClickDetector")
+					if clickDetector then
+						fireclickdetector(clickDetector)
+						task.wait(0.15)
+					end
+				end
+			end
+			local enterButton = buttonsFolder:FindFirstChild("Enter")
+			local enterDetector = enterButton and enterButton:FindFirstChildOfClass("ClickDetector")
+			if enterDetector then
+				fireclickdetector(enterDetector)
+			end
+		end)
+	end
+})
+
+local LobbyHider = Game:Button({
+	Title = "Lobby Hider",
+	Desc = "Teleports you above the lobby ceiling",
+	Locked = false,
+	Callback = function()
+		pcall(function()
+			local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local ceiling = workspace:FindFirstChild("Lobby") and workspace.Lobby:FindFirstChild("Ceiling")
+			if hrp and ceiling then
+				hrp.CFrame = CFrame.new(ceiling.Position + Vector3.new(0, 50, 0), hrp.Position + hrp.CFrame.LookVector)
+			end
+		end)
+	end
+})
+
+Game:Divider()
+
+local RejoinMatchmaking = Game:Button({
+	Title = "Rejoin Matchmaking",
+	Desc = "Teleports you to a matchmaking server",
+	Locked = false,
+	Callback = function()
+		game:GetService("TeleportService"):Teleport(9426795465)
+	end
+})
+
+local connection
+local WalkSpeed = PlayerMods:Toggle({
+	Title = "WalkSpeed",
+	Desc = "Increases your speed",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.WalkSpeed,
+	Callback = function(Value)
+		ConfigData.WalkSpeed = Value
+		SaveConfig()
+		if connection then
+			connection:Disconnect()
+			connection = nil
+		end
+		if Value then
+			connection = RunService.Heartbeat:Connect(function()
+				local character = player.Character
+				local hrp = character and character:FindFirstChild("HumanoidRootPart")
+				local hum = character and character:FindFirstChildOfClass("Humanoid")
+				if not character or character:GetAttribute("Ragdolled") or not hrp or not hum then return end
+				local move = hum.MoveDirection
+				if move.Magnitude <= 0 then return end
+				local velocity = hrp.AssemblyLinearVelocity
+				local horizontal = Vector3.new(velocity.X, 0, velocity.Z)
+				local speed = hum.WalkSpeed + (tonumber(ConfigData.SpeedValue) or 0)
+				if horizontal.Magnitude > speed then
+					horizontal = horizontal.Unit * speed
+					hrp.AssemblyLinearVelocity = Vector3.new(horizontal.X, velocity.Y, horizontal.Z)
+				else
+					local direction = Vector3.new(move.X, 0, move.Z).Unit
+					hrp.AssemblyLinearVelocity = Vector3.new(direction.X * speed, velocity.Y, direction.Z * speed)
+				end
+			end)
+		end
+	end
+})
+
+local SpeedValue = PlayerMods:Slider({
+	Title = "WalkSpeed Value",
+	Desc = "",
+	Step = 1,
+	Value = { Min = 1, Max = 40, Default = ConfigData.SpeedValue },
+	Callback = function(Value)
+		ConfigData.SpeedValue = tonumber(Value) or 0
+		SaveConfig()
+	end
+})
+
+PlayerMods:Divider()
+
+local SpeedBoost = PlayerMods:Toggle({
+	Title = "Speed Boost",
+	Desc = "Toggle a TP-Based speed boost",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.SpeedBoost,
+	Callback = function(Value)
+		ConfigData.SpeedBoost = Value
+		SaveConfig()
+		while ConfigData.SpeedBoost do
+			TP()
+			task.wait(boostcooldown)
+		end
+	end
+})
+
+local SpeedDistance = PlayerMods:Slider({
+	Title = "Distance",
+	Desc = "",
+	Step = 0.2,
+	Value = { Min = 5, Max = 20, Default = ConfigData.SpeedDistance },
+	Callback = function(Value)
+		speeddistance = Value
+		ConfigData.SpeedDistance = Value
+		SaveConfig()
+	end
+})
+
+local BoostCooldown = PlayerMods:Slider({
+	Title = "Cooldown",
+	Desc = "low cooldown may kick.",
+	Step = 0.1,
+	Value = { Min = 1, Max = 5, Default = ConfigData.BoostCooldown },
+	Callback = function(Value)
+		boostcooldown = Value
+		ConfigData.BoostCooldown = Value
+		SaveConfig()
+	end
+})
+
+PlayerMods:Divider()
+
+local originalC0 = nil
+
+local FastSpeed = PlayerMods:Toggle({
+	Title = "Fast Speed",
+	Desc = "Fast animation-based movement exploit",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.FastSpeed,
+	Callback = function(Value)
+		ConfigData.FastSpeed = Value
+		SaveConfig()
+		if not Value then
+			local char = player.Character
+			if char then
+				local rightLeg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightUpperLeg")
+				local torso = char:FindFirstChild("Torso") or char:FindFirstChild("LowerTorso")
+				local motor = (rightLeg and rightLeg:FindFirstChildOfClass("Motor6D")) or (torso and torso:FindFirstChild("Right Hip"))
+				if motor and originalC0 then
+					motor.C0 = originalC0
+				end
+			end
+		end
+	end
+})
+
+local InfiniteJump = PlayerMods:Toggle({
+	Title = "Infinite Jump",
+	Desc = "Allows you to jump infinitely in the air",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.InfiniteJump,
+	Callback = function(Value)
+		ConfigData.InfiniteJump = Value
+		SaveConfig()
+	end
+})
+
+UserInputService.JumpRequest:Connect(function()
+	if ConfigData.InfiniteJump then
+		local char = player.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		if hum then
+			hum:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
+	end
+end)
+
+local GoUnderMap = PlayerMods:Toggle({
+	Title = "Go Under Map",
+	Desc = "Teleports you beneath the map geometry",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.GoUnderMap,
+	Callback = function(Value)
+		ConfigData.GoUnderMap = Value
+		SaveConfig()
+		pcall(function()
+			local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if hrp and Value then
+				hrp.CFrame = hrp.CFrame + Vector3.new(0, -30, 0)
+			end
+		end)
+	end
+})
+
+PlayerMods:Divider()
+
+local AntiZoneBlur = PlayerMods:Toggle({
+	Title = "Anti Zone Blur",
+	Desc = "Removes the annoying zone blur, so you could see more further.",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiZoneBlur,
+	Callback = function(Value)
+		ConfigData.AntiZoneBlur = Value
+		SaveConfig()
+		if ConfigData.AntiZoneBlur == true then
+			RemoveZoneEffects()
+		end
+	end
+})
+
+Lighting.ChildAdded:Connect(function(zone)
+	if not ConfigData.AntiZoneBlur then return end
+	if zone.Name == "ZoneBlur" or zone.Name == "ZoneColorCorrection" then
+		task.defer(RemoveZoneEffects)
+	end
+end)
+
+PlayerMods:Divider()
+
+local Hitbox = CombatTab:Toggle({
+	Title = "Hitbox",
+	Desc = "extends players hitbox to make your hits alot easier",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Hitbox,
+	Callback = function(Value)
+		ConfigData.Hitbox = Value
+		SaveConfig()
+		if ConfigData.Hitbox == false then
+			for _, v in pairs(Players:GetPlayers()) do
+				if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+					local hrp = v.Character:FindFirstChild("HumanoidRootPart")
+					hrp.Size = Vector3.new(2, 2, 1)
+					hrp.Transparency = 1
+					hrp.CanCollide = false
+				end
+			end
+		end
+		while ConfigData.Hitbox do
+			for _, v in pairs(Players:GetPlayers()) do
+				if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+					local hrp = v.Character:FindFirstChild("HumanoidRootPart")
+					local hum = v.Character:FindFirstChildOfClass("Humanoid")
+					if hrp and hum and hum.Health > 0 then
+						local currentSize = hrpsize or 5
+						hrp.Size = Vector3.new(currentSize, currentSize, currentSize)
+						hrp.Transparency = 0.65
+						hrp.CanCollide = false
+					end
+				end
+			end
+			task.wait()
+		end
+	end
+})
+
+local HitboxSize = CombatTab:Slider({
+	Title = "Hitbox Size",
+	Desc = "",
+	Step = 1,
+	Value = { Min = 5, Max = 15, Default = ConfigData.HitboxSize },
+	Callback = function(Value)
+		hrpsize = Value
+		ConfigData.HitboxSize = Value
+		SaveConfig()
+	end
+})
+
+CombatTab:Divider()
+
+local SlapAura = CombatTab:Toggle({
+	Title = "Slap Aura",
+	Desc = "Automatically slaps players within range",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.SlapAura,
+	Callback = function(Value)
+		Combat.SetSlapAura(Value)
+	end
+})
+
+local TomahawkAura = CombatTab:Toggle({
+	Title = "Tomahawk Aura",
+	Desc = "Hits players within a set distance.",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.TomahawkAura,
+	Callback = function(Value)
+		ConfigData.TomahawkAura = Value
+		SaveConfig()
+		while ConfigData.TomahawkAura do
+			if character:FindFirstChild("Tomahawk") then
+				for _, v in pairs(Players:GetPlayers()) do
+					if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+						if not character:GetAttribute("Ragdolled") and not v.Character:GetAttribute("Ragdolled") and v.Character:GetAttribute("Vulnerable") and not v.Character:FindFirstChild("ForceField") and v.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+							if (humanoidrootpart.Position - v.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude <= tomahawkRange then
+								ReplicatedStorage.Remotes.Throw:FireServer(Vector3.new(v.Character.HumanoidRootPart.Position))
+							end
+						end
+					end
+				end
+			end
+			task.wait()
+		end
+	end
+})
+
+local TomahawkAimbot = CombatTab:Toggle({
+	Title = "Tomahawk Aimbot",
+	Desc = "Automatically targets players with Tomahawk",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.TomahawkAimbot,
+	Callback = function(Value)
+		ConfigData.TomahawkAimbot = Value
+		SaveConfig()
+	end
+})
+
+local TomahawkRange = CombatTab:Slider({
+	Title = "Tomahawk Range",
+	Desc = "",
+	Step = 1,
+	Value = { Min = 5, Max = 20, Default = ConfigData.TomahawkRange },
+	Callback = function(Value)
+		tomahawkRange = Value
+		ConfigData.TomahawkRange = Value
+		SaveConfig()
+	end
+})
+
+CombatTab:Divider()
+
+local TPToLowestHP = CombatTab:Button({
+	Title = "TP to Lowest HP",
+	Desc = "Teleports you to the nearest player with lowest health",
+	Locked = false,
+	Callback = function()
+		pcall(function()
+			local char = player.Character
+			if char and char:FindFirstChild("HumanoidRootPart") then
+				local root = char.HumanoidRootPart
+				local target = nil
+				local lowestHealth = math.huge
+				for _, p in ipairs(Players:GetPlayers()) do
+					if p ~= player and p.Character then
+						local hum = p.Character:FindFirstChildOfClass("Humanoid")
+						local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+						if hum and hrp and hum.Health > 0 and hum.Health < lowestHealth then
+							lowestHealth = hum.Health
+							target = p
+						end
+					end
+				end
+				if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+					root.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+				end
+			end
+		end)
+	end
+})
+
+CombatTab:Divider()
+
+-- Player Teleport with Dynamic Selection & Refresh
+local selectedTPPlayer = nil
+local playerDropdownValues = {}
+for _, p in ipairs(Players:GetPlayers()) do
+	if p ~= player then table.insert(playerDropdownValues, p.Name) end
+end
+
+local PlayerTPDropdown = CombatTab:Dropdown({
+	Title = "Select Player to TP",
+	Desc = "Choose a player from the server",
+	Values = playerDropdownValues,
+	Value = "",
+	Callback = function(Selected)
+		selectedTPPlayer = Selected
+	end
+})
+
+local RefreshPlayersButton = CombatTab:Button({
+	Title = "Refresh Player List",
+	Desc = "Updates the list of active players in the game",
+	Locked = false,
+	Callback = function()
+		local updatedValues = {}
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p ~= player then table.insert(updatedValues, p.Name) end
+		end
+		PlayerTPDropdown:SetValues(updatedValues)
+		Notification("Refreshed", "Player list has been updated (" .. #updatedValues .. " players)", 3, "bird")
+	end
+})
+
+local TPToSelectedPlayer = CombatTab:Button({
+	Title = "Teleport to Selected Player",
+	Desc = "Teleports you safely above the chosen player",
+	Locked = false,
+	Callback = function()
+		pcall(function()
+			if not selectedTPPlayer then
+				Notification("Error", "No player selected!", 3, "bird")
+				return
+			end
+			local targetP = Players:FindFirstChild(selectedTPPlayer)
+			local char = player.Character
+			if targetP and targetP.Character and targetP.Character:FindFirstChild("HumanoidRootPart") and char and char:FindFirstChild("HumanoidRootPart") then
+				char.HumanoidRootPart.CFrame = targetP.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+			else
+				Notification("Error", "Target player is not valid or dead.", 3, "bird")
+			end
+		end)
+	end
+})
+
+Players.PlayerRemoving:Connect(function(leftPlayer)
+	if leftPlayer.Name == selectedTPPlayer then selectedTPPlayer = nil end
+	local updatedValues = {}
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= player then table.insert(updatedValues, p.Name) end
+	end
+	pcall(function() PlayerTPDropdown:SetValues(updatedValues) end)
+end)
+
+Players.PlayerAdded:Connect(function(newPlayer)
+	local updatedValues = {}
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= player then table.insert(updatedValues, p.Name) end
+	end
+	pcall(function() PlayerTPDropdown:SetValues(updatedValues) end)
+end)
+
+local AntiRagdoll = Immunites:Toggle({
+	Title = "Anti Ragdoll",
+	Desc = "Remove ragdoll knockback",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiRagdoll,
+	Callback = function(Value)
+		ConfigData.AntiRagdoll = Value
+		SaveConfig()
+		while ConfigData.AntiRagdoll do
+			if character:GetAttribute("Ragdolled") and humanoid.Health > 0 then
+				task.spawn(function()
+					humanoidrootpart.Massless = true
+					task.wait(1)
+					humanoidrootpart.Massless = false
+				end)
+				repeat task.wait() until game:GetService("Players").LocalPlayer.Character:GetAttribute("Ragdolled")
+				repeat task.wait()
+					game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+					game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+				until not game:GetService("Players").LocalPlayer.Character:GetAttribute("Ragdolled")
+			end
+			task.wait()
+		end
+	end
+})
+
+local AntiAcid = Immunites:Toggle({
+	Title = "Anti Acid",
+	Desc = "prevents you from falling into acids whenever you're about to fall",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiAcid,
+	Callback = function(Value)
+		ConfigData.AntiAcid = Value
+		SaveConfig()
+		if ConfigData.AntiAcid == true then
+			antiacid = Instance.new("Part", workspace)
+			antiacid.Name = "AntiAcid"
+			antiacid.CFrame = CFrame.new(-52.5227737, 8.5, -719.113098, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+			antiacid.Size = Vector3.new(181, 2, 112)
+			antiacid.Transparency = 0.7
+			antiacid.Anchored = true
+		else
+			if antiacid then
+				antiacid:Destroy()
+				antiacid = nil
+			end
+		end
+	end
+})
+
+local AntiLava = Immunites:Toggle({
+	Title = "Anti Lava",
+	Desc = "prevents you from falling into lavas whenever you're about to fall",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiLava,
+	Callback = function(Value)
+		ConfigData.AntiLava = Value
+		SaveConfig()
+		if ConfigData.AntiLava == true then
+			antilava = Instance.new("Part", workspace)
+			antilava.Name = "antilava1"
+			antilava.CFrame = CFrame.new(-240.884857, -32.5042801, 387.814423, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+			antilava.Size = Vector3.new(145, 1, 164)
+			antilava.Transparency = 0.7
+			antilava.Anchored = true
+			antilava2 = Instance.new("Part", workspace)
+			antilava2.Name = "antilava2"
+			antilava2.CFrame = CFrame.new(-606.808472, -42.7771835, -224.204117, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+			antilava2.Size = Vector3.new(94, 1, 80)
+			antilava2.Transparency = 0.7
+			antilava2.Anchored = true
+		else
+			if antilava and antilava2 then
+				antilava:Destroy()
+				antilava = nil
+				antilava2:Destroy()
+				antilava2 = nil
+			end
+		end
+	end
+})
+
+local AntiIceCubes = Immunites:Toggle({
+	Title = "Anti Ice Cubes",
+	Desc = "Removes your weld to ice cubes.",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiIceCubes,
+	Callback = function(Value)
+		ConfigData.AntiIceCubes = Value
+		SaveConfig()
+		if ConfigData.AntiIceCubes == true then
+			RemoveIceCube()
+		end
+	end
+})
+
+character.ChildAdded:Connect(function(cube)
+	if not ConfigData.AntiIceCubes then return end
+	if cube.Name == "Icecube" then
+		task.defer(RemoveIceCube)
+	end
+end)
+
+local AntiCubeOfDeath = Immunites:Toggle({
+	Title = "Anti Cube Of Death",
+	Desc = "prevents you from getting yourself killed from the death cubes",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiCubeOfDeath,
+	Callback = function(Value)
+		ConfigData.AntiCubeOfDeath = Value
+		SaveConfig()
+		if ConfigData.AntiCubeOfDeath == true then
+			DeathCubes(false)
+		elseif ConfigData.AntiCubeOfDeath == false then
+			DeathCubes(true)
+		end
+	end
+})
+
+local AntiKillBrick = Immunites:Toggle({
+	Title = "Anti Kill Brick",
+	Desc = "Disables touch interests on hazards and kill parts",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AntiKillBrick,
+	Callback = function(Value)
+		ConfigData.AntiKillBrick = Value
+		SaveConfig()
+		if Value then
+			pcall(function()
+				for _, v in ipairs(workspace:GetDescendants()) do
+					if v:IsA("BasePart") then
+						local name = v.Name:lower()
+						if name:find("kill") or name:find("death") or name:find("damage") or name:find("void") or name:find("lava") then
+							v.CanTouch = false
+							local t = v:FindFirstChild("TouchInterest")
+							if t then t:Destroy() end
+						end
+					end
+				end
+			end)
+		end
+	end
+})
+
+local DeleteSeats = Immunites:Toggle({
+	Title = "Delete All Seats",
+	Desc = "Removes all seats and vehicle seats from the world",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.DeleteSeats,
+	Callback = function(Value)
+		ConfigData.DeleteSeats = Value
+		SaveConfig()
+	end
+})
+
+local Glove = ESP:Toggle({
+	Title = "Glove",
+	Desc = "views what glove the players are using",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Glove,
+	Callback = function(Value)
+		ConfigData.Glove = Value
+		SaveConfig()
+	end
+})
+
+local Kills = ESP:Toggle({
+	Title = "Kills",
+	Desc = "views how many kills does the players have",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Kills,
+	Callback = function(Value)
+		ConfigData.Kills = Value
+		SaveConfig()
+	end
+})
+
+local Power = ESP:Toggle({
+	Title = "Power",
+	Desc = "views how much power the players have",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Power,
+	Callback = function(Value)
+		ConfigData.Power = Value
+		SaveConfig()
+	end
+})
+
+local Health = ESP:Toggle({
+	Title = "Health ESP",
+	Desc = "displays players health status",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Health,
+	Callback = function(Value)
+		ConfigData.Health = Value
+		SaveConfig()
+	end
+})
+
+local Speed = ESP:Toggle({
+	Title = "Speed",
+	Desc = "views how fast is the players",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.Speed,
+	Callback = function(Value)
+		ConfigData.Speed = Value
+		SaveConfig()
+	end
+})
+
+local JumpPower = ESP:Toggle({
+	Title = "JumpPower",
+	Desc = "views how high the players can jump",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.JumpPower,
+	Callback = function(Value)
+		ConfigData.JumpPower = Value
+		SaveConfig()
+	end
+})
+
+local PlayersEsp = ESP:Toggle({
+	Title = "Players ESP",
+	Desc = "this will make you able to see players from afar",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.PlayersESP,
+	Callback = function(Value)
+		ConfigData.PlayersESP = Value
+		SaveConfig()
+	end
+})
+
+local ItemsESP = ESP:Toggle({
+	Title = "Items ESP",
+	Desc = "Highlights and tracks items around the map",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.ItemsESP,
+	Callback = function(Value)
+		ConfigData.ItemsESP = Value
+		SaveConfig()
+		if not Value then
+			for itemObj, gui in pairs(itemEspTable) do
+				if gui then gui:Destroy() end
+			end
+			table.clear(itemEspTable)
+		end
+	end
+})
+
+local GloveESP = ESP:Toggle({
+	Title = "Glove ESP",
+	Desc = "Displays equipped glove above players' heads",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.GloveESP,
+	Callback = function(Value)
+		ConfigData.GloveESP = Value
+		SaveConfig()
+		if not Value then
+			for p, gui in pairs(gloveEspTable) do
+				if gui then gui:Destroy() end
+			end
+			table.clear(gloveEspTable)
+		end
+	end
+})
+
+ESP:Divider()
+
+-- Auto Collect Setup & Dropdown Selection Box
+local itemValues = {
+	"Apple", "Bandage", "Bomb", "Bull's Essence", "Frog Potion", "Boba", "Speed Potion",
+	"True Power", "Tomahawk", "Force Field Crystal", "Sphere of Fury", "Medkit",
+	"Lightning Potion", "Healing Potion", "Strength Potion", "Cube of Ice"
+}
+
+local AutoCollectDropdown = Game:Dropdown({
+	Title = "Auto Collect Item Selection",
+	Desc = "Choose which item to automatically collect",
+	Values = itemValues,
+	Value = ConfigData.SelectedAutoCollectItem,
+	Callback = function(Selected)
+		ConfigData.SelectedAutoCollectItem = Selected
+		SaveConfig()
+	end
+})
+
+local AutoCollect = Game:Toggle({
+	Title = "Auto Collect",
+	Desc = "Automatically collects items around the map",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AutoCollect,
+	Callback = function(Value)
+		ConfigData.AutoCollect = Value
+		SaveConfig()
+	end
+})
+
+local AutoUseItems = Game:Toggle({
+	Title = "Auto Use Items",
+	Desc = "Automatically consumes status and health items",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AutoUseItems,
+	Callback = function(Value)
+		ConfigData.AutoUseItems = Value
+		SaveConfig()
+	end
+})
+
+local AutoBombBus = Game:Toggle({
+	Title = "Auto Bomb Bus",
+	Desc = "Automatically deploys bomb ability during bus countdowns",
+	Icon = "bird",
+	Type = "Checkbox",
+	Value = ConfigData.AutoBombBus,
+	Callback = function(Value)
+		ConfigData.AutoBombBus = Value
+		SaveConfig()
+	end
+})
+
+-- Background Logic Loops
+local itemEspTable = {}
+local gloveEspTable = {}
+local playerEspTable = {}
+local itemColors = {
+	["Bull's Essence"] = Color3.fromRGB(139, 69, 19),
+	["Potion of Strength"] = Color3.fromRGB(160, 32, 240),
+	["True Power"] = Color3.fromRGB(255, 255, 255),
+	["Frog Potion"] = Color3.fromRGB(30, 144, 255),
+	["Speed Potion"] = Color3.fromRGB(255, 255, 0),
+	["Boba"] = Color3.fromRGB(255, 255, 150),
+	["Apple"] = Color3.fromRGB(50, 205, 50),
+	["Bandage"] = Color3.fromRGB(0, 255, 255),
+	["First Aid Kit"] = Color3.fromRGB(160, 32, 240),
+	["Forcefield Crystal"] = Color3.fromRGB(0, 255, 255),
+	["Force Field Crystal"] = Color3.fromRGB(0, 255, 255),
+	["Healing Potion"] = Color3.fromRGB(255, 50, 50),
+	["Tomahawk"] = Color3.fromRGB(255, 50, 50),
+	["Cube of Ice"] = Color3.fromRGB(0, 255, 255),
+	["Bomb"] = Color3.fromRGB(255, 140, 0),
+	["Gravitation Shard"] = Color3.fromRGB(100, 0, 150),
+	["Sphere of Fury"] = Color3.fromRGB(255, 100, 150),
+	["Medkit"] = Color3.fromRGB(255, 0, 0),
+	["Lightning Potion"] = Color3.fromRGB(255, 255, 100),
+	["Strength Potion"] = Color3.fromRGB(200, 50, 200)
+}
+
+local function getGloveValue(targetPlayer)
+	local gloveObj = targetPlayer:FindFirstChild("Glove") or (targetPlayer:FindFirstChild("leaderstats") and targetPlayer.leaderstats:FindFirstChild("Glove"))
+	if not gloveObj then return "Unknown" end
+	local success, val = pcall(function() return gloveObj.Value end)
+	if success and val ~= nil then return tostring(val) end
+	return "Unknown"
+end
+
+RunService.RenderStepped:Connect(function()
+	if ConfigData.PlayersESP or ConfigData.PlayersEsp then
+		for _, e in ipairs(Players:GetPlayers()) do
+			if e ~= player and e.Character and e.Character.Parent then
+				local char = e.Character
+				local head = char:FindFirstChild("Head")
+				local hum = char:FindFirstChildOfClass("Humanoid")
+				if head and hum and hum.Health > 0 then
+					local billboard = playerEspTable[e]
+					if not billboard or not billboard.Parent then
+						billboard = Instance.new("BillboardGui")
+						billboard.Name = "PlayerESP_Gui"
+						billboard.Size = UDim2.new(0, 160, 0, 45)
+						billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+						billboard.AlwaysOnTop = true
+						billboard.Parent = head
+						local label = Instance.new("TextLabel")
+						label.Name = "ESPLabel"
+						label.Size = UDim2.new(1, 0, 1, 0)
+						label.BackgroundTransparency = 1
+						label.TextColor3 = Color3.fromRGB(255, 255, 255)
+						label.TextStrokeTransparency = 0.2
+						label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+						label.TextSize = 11
+						label.Font = Enum.Font.SourceSansBold
+						label.Parent = billboard
+						playerEspTable[e] = billboard
+					end
+					local label = billboard:FindFirstChild("ESPLabel")
+					if label then
+						label.Text = e.Character.Name .. "\n" .. GetPlayerInfo(e)
+					end
+				else
+					if playerEspTable[e] then
+						playerEspTable[e]:Destroy()
+						playerEspTable[e] = nil
+					end
+				end
+			else
+				if playerEspTable[e] then
+					playerEspTable[e]:Destroy()
+					playerEspTable[e] = nil
+				end
+			end
+		end
+	else
+		for e, billboard in pairs(playerEspTable) do
+			if billboard then billboard:Destroy() end
+			playerEspTable[e] = nil
+		end
+	end
+
+	if ConfigData.ItemsESP then
+		local itemsFolder = workspace:FindFirstChild("Items")
+		if itemsFolder then
+			for _, itemObj in ipairs(itemsFolder:GetChildren()) do
+				local part = itemObj:IsA("BasePart") and itemObj or (itemObj:IsA("Model") and (itemObj.PrimaryPart or itemObj:FindFirstChildWhichIsA("BasePart")))
+				if part then
+					local billboard = itemEspTable[itemObj]
+					if not billboard or not billboard.Parent then
+						billboard = Instance.new("BillboardGui")
+						billboard.Name = "ItemESP_Gui"
+						billboard.Size = UDim2.new(0, 140, 0, 30)
+						billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+						billboard.AlwaysOnTop = true
+						billboard.Parent = part
+						local label = Instance.new("TextLabel")
+						label.Name = "ItemLabel"
+						label.Size = UDim2.new(1, 0, 1, 0)
+						label.BackgroundTransparency = 1
+						label.TextStrokeTransparency = 0.2
+						label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+						label.TextSize = 12
+						label.Font = Enum.Font.SourceSansBold
+						label.Text = itemObj.Name
+						label.TextColor3 = itemColors[itemObj.Name] or Color3.fromRGB(255, 255, 0)
+						label.Parent = billboard
+						itemEspTable[itemObj] = billboard
+					end
+				end
+			end
+		end
+	else
+		for itemObj, billboard in pairs(itemEspTable) do
+			if billboard then billboard:Destroy() end
+			itemEspTable[itemObj] = nil
+		end
+	end
+
+	if ConfigData.GloveESP then
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p ~= player and p.Character and p.Character.Parent then
+				local char = p.Character
+				local head = char:FindFirstChild("Head")
+				local hum = char:FindFirstChildOfClass("Humanoid")
+				if head and hum and hum.Health > 0 then
+					local billboard = gloveEspTable[p]
+					if not billboard or not billboard.Parent then
+						billboard = Instance.new("BillboardGui")
+						billboard.Name = "GloveESP_Gui"
+						billboard.Size = UDim2.new(0, 160, 0, 25)
+						billboard.StudsOffset = Vector3.new(0, 4.0, 0)
+						billboard.AlwaysOnTop = true
+						billboard.Parent = head
+						local label = Instance.new("TextLabel")
+						label.Name = "GloveLabel"
+						label.Size = UDim2.new(1, 0, 1, 0)
+						label.BackgroundTransparency = 1
+						label.TextColor3 = Color3.fromRGB(255, 220, 80)
+						label.TextStrokeTransparency = 0.2
+						label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+						label.TextSize = 11
+						label.Font = Enum.Font.SourceSansBold
+						label.Parent = billboard
+						gloveEspTable[p] = billboard
+					end
+					local label = billboard:FindFirstChild("GloveLabel")
+					if label then
+						label.Text = "Glove: " .. getGloveValue(p)
+					end
+				else
+					if gloveEspTable[p] then
+						gloveEspTable[p]:Destroy()
+						gloveEspTable[p] = nil
+					end
+				end
+			else
+				if gloveEspTable[p] then
+					gloveEspTable[p]:Destroy()
+					gloveEspTable[p] = nil
+				end
+			end
+		end
+	else
+		for p, billboard in pairs(gloveEspTable) do
+			if billboard then billboard:Destroy() end
+			gloveEspTable[p] = nil
+		end
+	end
+end)
+
+RunService.Stepped:Connect(function()
+	if ConfigData.FastSpeed then
+		local char = player.Character
+		if char then
+			local hum = char:FindFirstChildOfClass("Humanoid")
+			local rightLeg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightUpperLeg")
+			local torso = char:FindFirstChild("Torso") or char:FindFirstChild("LowerTorso")
+			if hum and hum.Health > 0 and rightLeg and torso then
+				local motor = rightLeg:FindFirstChildOfClass("Motor6D") or torso:FindFirstChild("Right Hip")
+				if motor then
+					if not originalC0 or originalC0 == CFrame.new(30, -1, 0) then
+						originalC0 = motor.C0
+					end
+					motor.C0 = CFrame.new(30, -1, 0)
+				end
+			end
+		end
+	end
+end)
+
+task.spawn(function()
+	while true do
+		if ConfigData.DeleteSeats then
+			for _, obj in ipairs(game:GetDescendants()) do
+				if obj:IsA("Seat") or obj:IsA("VehicleSeat") then
+					obj:Destroy()
+				end
+			end
+		end
+		task.wait(0.1)
+	end
+end)
+
+-- Auto Collect Loop updated with the Selected Dropdown Item support
+task.spawn(function()
+	local itemRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Item", 5)
+	while true do
+		task.wait(1)
+		if ConfigData.AutoCollect and itemRemote then
+			pcall(function()
+				local char = player.Character
+				if char and char:FindFirstChild("HumanoidRootPart") then
+					local hrp = char.HumanoidRootPart
+					local selectedName = (ConfigData.SelectedAutoCollectItem or "Apple"):lower()
+					for _, obj in ipairs(workspace:GetDescendants()) do
+						if not ConfigData.AutoCollect then break end
+						if obj.Name:lower() == selectedName or obj.Name:lower():find(selectedName:gsub("'", "")) then
+							local desc = (obj.Name .. " " .. (obj.Parent and obj.Parent.Name or "")):lower()
+							if not (desc:find("shop") or desc:find("stand") or desc:find("vendor") or desc:find("store") or desc:find("pedestal")) then
+								local targetPart = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or obj
+								if targetPart and targetPart:IsA("BasePart") then
+									hrp.CFrame = targetPart.CFrame + Vector3.new(0, 3, 0)
+									task.wait(0.3)
+									local id = targetPart:GetAttribute("ItemId") or (targetPart.Parent and targetPart.Parent:GetAttribute("ItemId"))
+									if id then
+										pcall(function() itemRemote:FireServer(id) end)
+									end
+									UserInputService:SendKeyEvent(true, Enum.KeyCode.F, false, game)
+									task.wait(0.3)
+									UserInputService:SendKeyEvent(false, Enum.KeyCode.F, false, game)
+									break
+								end
+							end
+						end
+					end
+				end
+			end)
+		end
+	end
+end)
